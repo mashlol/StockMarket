@@ -19,7 +19,7 @@ public class PlayerStocks {
 		exists = getPlayerInfo();
 	}
 	
-	public boolean getPlayerInfo() {
+	private boolean getPlayerInfo() {
 		// FIND THIS PLAYER IN THE DB, FILL IN HIS INFO
 		MySQL mysql = new MySQL();
 		
@@ -72,10 +72,6 @@ public class PlayerStocks {
 	
 	public boolean exists() {
 		return this.exists;
-	}
-	
-	public PlayerStock get (String key) { 
-		return this.stock.get(key);
 	}
 	
 	public boolean sell (Stock stock, int amount) {
@@ -145,10 +141,6 @@ public class PlayerStocks {
 			m.errorMessage("Invalid stock ID");
 			return false;
 		}
-	}
-	
-	public HashMap<String, PlayerStock> list() {
-		return stock;
 	}
 	
 	public void listAll () {

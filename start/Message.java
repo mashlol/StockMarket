@@ -40,19 +40,16 @@ public class Message {
 			System.out.println("[StockMarket] " + message);
 	}
 	
+	public void helpMessage(String message) {
+		if (player != null)
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.AQUA + " " + message);
+		else
+			System.out.println("[StockMarket] " + message);
+	}
+	
 	public void displayHelp (int page) {
-		if (page == 1) {
-			successMessage("Help [Page 1 of 2]:");
-			regularMessage("/sm help [page] - Displays a list of available commands and their info.");
-			regularMessage("/sm info - Displays plugin version & status.");
-			regularMessage("/sm list - Displays a list of stocks you are allowed to buy and their current price.");
-			regularMessage("/sm list mine - Displays a list of stocks that you currently own and their current price.");
-			regularMessage("/sm buy <stock ID> <amount> - Buys the stock specified.");
-		} else if (page == 2) {
-			successMessage("Help [Page 2 of 2]:");
-			regularMessage("/sm sell <stock ID> <amount> - Sells the stock specified.");
-			regularMessage("/sm <stockID> - displays more details about stock requested.");
-		}
+		Help h = new Help(player);
+		h.display(page);
 	}
 	
 }
