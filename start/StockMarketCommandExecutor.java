@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,32 +46,11 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("mine") && player != null) {
 				// LIST ALL THE STOCKS THIS PLAYER OWNS
 				PlayerStocks ps = new PlayerStocks(player);
-				
-				m.successMessage("List of stocks you own:");
-				
-				boolean found = false;
-				
-				for (int i=0; i<ps.list().size(); i++) {
-					PlayerStock playerstock = ps.list().get(i);
-					if (playerstock.amount > 0) {
-						m.regularMessage(playerstock.stock.getID() + " - Amount: " + playerstock.amount + " - Price: " + playerstock.stock.getPrice());
-						found = true;
-					}
-				}
-				
-				if (!found) {
-					m.errorMessage("You don't own any stocks.");
-				}
+				ps.listMine();
 			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list")) {
 				// LIST ALL THE STOCKS THIS PLAYER CAN BUY
 				PlayerStocks ps = new PlayerStocks(player);
-				
-				m.successMessage("List of stocks:");
-				
-				for (int i=0; i<ps.list().size(); i++) {
-					PlayerStock playerstock = ps.list().get(i);
-					m.regularMessage(playerstock.stock.getID() + " - Price: " + playerstock.stock.getPrice());
-				}
+				ps.listAll();
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("buy") && player != null) {
 				Stock stock = new Stock(args[1]);
 				int amount = 1;
@@ -220,7 +198,6 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.unknownCommand();
 					return true;
 				}
-				
 			} else if (args.length > 0){
 				// UNKNOWN COMMAND
 				m.unknownCommand();
