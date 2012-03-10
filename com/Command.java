@@ -29,4 +29,5 @@ public class Command {
 	public String getParameters () {
 		return parameters;
 	}
+	
 }

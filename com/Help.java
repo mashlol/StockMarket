@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public class Help {
 
-	private final int NUM_PER_PAGE = 5;
+	private final int NUM_PER_PAGE = 4;
 	
 	Player player;
 	
@@ -24,11 +24,15 @@ public class Help {
 		while (it.hasNext()) {
 			Command c = it.next();
 			// CHECK FOR PERMISSION NODE
-			n++;
-			if (n > NUM_PER_PAGE * page)
-				return;
-			else if (n > NUM_PER_PAGE * (page-1))
-				m.helpMessage("/sm " + c.getCommand() + " " + c.getParameters() + " - " + c.getCommandHelp());
+			if (StockMarket.permission.has(player, c.getPermissionNode())) {
+				n++;
+				if (n > NUM_PER_PAGE * page)
+					return;
+				else if (n > NUM_PER_PAGE * (page-1)) {
+					m.helpMessage("/sm " + c.getCommand() + " " + c.getParameters());
+					m.regularMessage(c.getCommandHelp());
+				}
+			}
 		}
 	}
 	
@@ -37,13 +41,13 @@ public class Help {
 		
 		Iterator<Command> it = StockMarket.commands.iterator();
 		while (it.hasNext()) {
-			@SuppressWarnings("unused")
 			Command c = it.next();
 			// CHECK FOR PERMISSION NODE
-			n++;
+			if (StockMarket.permission.has(player, c.getPermissionNode()))
+				n++;
 		}
 		
-		return ((int) n / NUM_PER_PAGE) + 1;
+		return ((int) (n-1) / NUM_PER_PAGE) + 1;
 	}
 	
 }

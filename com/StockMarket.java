@@ -26,16 +26,16 @@ public class StockMarket extends JavaPlugin {
 
 	public void onEnable() {
 		if (setupEconomy()) {
-			log.info("Economy plugin detected and hooked into.");
+			log.info("[StockMarket] Economy plugin detected and hooked into.");
 		} else {
-			log.info("Economy plugin not detected! Disabling StockMarket!");
+			log.info("[StockMarket] Economy plugin not detected! Disabling StockMarket!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 		if (setupPermissions()) {
-			log.info("Permissions plugin detected and hooked into.");
+			log.info("[StockMarket] Permissions plugin detected and hooked into.");
 		} else {
-			log.info("Permissions plugin not detected! Disabling StockMarket!");
+			log.info("[StockMarket] Permissions plugin not detected! Disabling StockMarket!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
