@@ -162,8 +162,9 @@ public class PlayerStocks {
 	public void listMine () {
 		Message m = new Message(player);
 		
-		if (hasStocks()) {
+		if (!hasStocks()) {
 			m.errorMessage("You don't own any stocks. /sm help for help.");
+			return;
 		}
 		
 		m.successMessage("List of your stocks:");
@@ -175,9 +176,8 @@ public class PlayerStocks {
 	
 	public boolean hasStocks () {
 		for (PlayerStock ps : stock.values())
-			if (ps.amount > 0) {
+			if (ps.amount > 0)
 				return true;
-			}
 		
 		return false;
 	}
