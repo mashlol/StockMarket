@@ -8,7 +8,7 @@ public class Stock {
 
 	private String name;
 	private String stockID;
-	private int price;
+	private double price;
 	private int basePrice;
 	private int maxPrice;
 	private int minPrice;
@@ -19,7 +19,7 @@ public class Stock {
 	public Stock (String name) {
 		this.stockID = name;
 		
-		getInfo();
+		exists = getInfo();
 	}
 	
 	public boolean getInfo () {
@@ -35,7 +35,6 @@ public class Stock {
 		}
 		ResultSet result = mysql.query(stmt);
 		
-		
 		try {
 			while (result.next()) {
 				// WE FOUND IT, STORE SOME INFO
@@ -45,7 +44,6 @@ public class Stock {
 				maxPrice = result.getInt("maxPrice");
 				minPrice = result.getInt("minPrice");
 				volatility = result.getInt("volatility");
-				exists = true;
 				mysql.close();
 				return true;
 			}
@@ -55,7 +53,6 @@ public class Stock {
 		
 		mysql.close();
 		
-		exists = false;
 		return false;
 	}
 	
@@ -118,7 +115,7 @@ public class Stock {
 		return this.basePrice;
 	}
 	
-	public int getPrice() {
+	public double getPrice() {
 		return this.price;
 	}
 	
@@ -127,7 +124,7 @@ public class Stock {
 	}
 	
 	public String getID() {
-		return this.stockID;
+		return this.stockID.toUpperCase();
 	}
 	
 	public String getName() {
@@ -135,7 +132,7 @@ public class Stock {
 	}
 	
 	public String toID() {
-		return this.stockID;
+		return this.stockID.toUpperCase();
 	}
 	
 	public String toString() {

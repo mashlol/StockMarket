@@ -3,13 +3,19 @@ package com;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
  
 public class StockMarket extends JavaPlugin {
  
 	private StockMarketCommandExecutor myExecutor;
+	public static Vector<Command> commands = new Vector<Command>();
 	
-	static public Vector<Command> commands = new Vector<Command>();
+	public static Permission permission = null;
+	public static Economy economy = null;
 	
 	Logger log = Logger.getLogger("Minecraft");
 	StockMarketEventThread s;
@@ -19,6 +25,21 @@ public class StockMarket extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		if (setupEconomy()) {
+			log.info("Economy plugin detected and hooked into.");
+		} else {
+			log.info("Economy plugin not detected! Disabling StockMarket!");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		if (setupPermissions()) {
+			log.info("Permissions plugin detected and hooked into.");
+		} else {
+			log.info("Permissions plugin not detected! Disabling StockMarket!");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
 		myExecutor = new StockMarketCommandExecutor(this);
 		getCommand("sm").setExecutor(myExecutor);
 		
@@ -50,5 +71,20 @@ public class StockMarket extends JavaPlugin {
 		commands.add(c);
 	}
 	
+	private Boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
 	
+	 private Boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 }

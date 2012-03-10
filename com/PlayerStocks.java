@@ -45,7 +45,7 @@ public class PlayerStocks {
 					newS.stock = new Stock(result2.getString("stockID"));
 					newS.amount = result.getInt(newS.stock.toID());
 					
-					this.stock.put(newS.stock.getID(), newS);
+					this.stock.put(newS.stock.getID().toUpperCase(), newS);
 				}
 				
 				mysql.close();
@@ -99,11 +99,10 @@ public class PlayerStocks {
 				}
 				
 				mysql.execute(stmt);
-				
-				
 				mysql.close();
 				
-				m.successMessage("Successfully sold " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
+				StockMarket.economy.depositPlayer(player.getName(), amount * stock.getPrice());
+				m.successMessage("Successfully sold " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNameSingular() + " each.");
 				return true;
 		} else {
 			m.errorMessage("Invalid stock ID");
@@ -114,9 +113,12 @@ public class PlayerStocks {
 	public boolean buy (Stock stock, int amount) {
 		Message m = new Message(player);
 		
-		if (stock.exists()) {		
+		if (stock.exists()) {
 			// CHECK THE PLAYER HAS ENOUGH MONEY TO BUY THIS MANY
-			
+			if (StockMarket.economy.getBalance(player.getName()) < amount * stock.getPrice()) {
+				m.errorMessage("Not enough money!");
+				return false;
+			}
 			
 			// OKAY THEY DO, LETS BUY EM
 			this.stock.get(stock.getID()).amount += amount;
@@ -135,7 +137,8 @@ public class PlayerStocks {
 			mysql.execute(stmt);
 			mysql.close();
 			
-			m.successMessage("Successfully purchased " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
+			StockMarket.economy.depositPlayer(player.getName(), -1 * amount * stock.getPrice());
+			m.successMessage("Successfully purchased " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNameSingular() + " each.");
 			return true;
 		} else {
 			m.errorMessage("Invalid stock ID");
