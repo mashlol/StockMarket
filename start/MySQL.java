@@ -21,11 +21,10 @@ public class MySQL {
 			Class.forName(driver);
 			con = DriverManager.getConnection(connection, user, password);
 			
-			PreparedStatement stmt = con.prepareStatement("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price int, basePrice int, maxPrice int, minPrice int, volatility int)");
-			execute(stmt);
+			execute("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price int, basePrice int, maxPrice int, minPrice int, volatility int)");
+			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
 			
-			stmt = con.prepareStatement("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
-			execute(stmt);
+			close();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -44,7 +43,19 @@ public class MySQL {
 		return rs;
 	}
 	
-	public void execute (PreparedStatement stmt) {
+public void execute (PreparedStatement stmt) {
+	
+		try {
+			stmt.execute();
+		} catch (SQLException e4) {
+			e4.printStackTrace();
+		}
+	}
+	
+	public void execute (String s) {
+		
+		PreparedStatement stmt = prepareStatement(s);
+		
 		try {
 			stmt.execute();
 		} catch (SQLException e4) {

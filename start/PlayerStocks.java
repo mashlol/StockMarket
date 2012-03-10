@@ -16,7 +16,7 @@ public class PlayerStocks {
 	public PlayerStocks (Player player) {
 		this.player = player;
 		
-		getPlayerInfo();
+		exists = getPlayerInfo();
 	}
 	
 	public boolean getPlayerInfo() {
@@ -48,7 +48,6 @@ public class PlayerStocks {
 					this.stock.add(newS);
 				}
 				
-				exists = true;
 				mysql.close();
 				return true;
 			}
@@ -68,8 +67,6 @@ public class PlayerStocks {
 		
 		
 		mysql.close();
-		
-		exists = false;
 		return false;
 	}
 	

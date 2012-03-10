@@ -133,10 +133,10 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
+		
 				
-				stmt = mysql.prepareStatement("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
 				//PreparedStatement stmt = mysql.prepareStatement("IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'players' AND COLUMN_NAME = '" + stockID + "') BEGIN ALTER TABLE players ADD " + stockID + " TINTYTEXT DEFAULT '0'");
-				mysql.execute(stmt);
+				mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
 				
 				stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility) VALUES (?, ?, ?, ?, ?, ?, ?)");
 				try {
@@ -166,11 +166,10 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				// REMOVE COLUMN FROM players, REMOVE ROW FROM stocks
 				// LETS FIRST LOOK AT STOCKS AND RETURN IF NOT FOUND
 					MySQL mysql = new MySQL();
-					PreparedStatement stmt = mysql.prepareStatement("ALTER TABLE players DROP COLUMN " + stockID);
 					
-					mysql.execute(stmt);
+					mysql.execute("ALTER TABLE players DROP COLUMN " + stockID);
 					
-					stmt = mysql.prepareStatement("DELETE FROM stocks WHERE StockID LIKE ?");
+					PreparedStatement stmt = mysql.prepareStatement("DELETE FROM stocks WHERE StockID LIKE ?");
 					try {
 						stmt.setString(1, stockID);
 					} catch (SQLException e) {

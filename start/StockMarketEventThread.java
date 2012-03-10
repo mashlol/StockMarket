@@ -45,7 +45,6 @@ public class StockMarketEventThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	private void broadcastMessage (String message) {
