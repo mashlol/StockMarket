@@ -79,74 +79,87 @@ public class PlayerStocks {
 	}
 	
 	public boolean sell (Stock stock, int amount) {
-		for (int i=0; i<this.stock.size(); i++) {
-			if (this.stock.get(i).stock.toString().equalsIgnoreCase(stock.toString())) {
-				// FOUND IT
-				
-				// CHECK THE PLAYER HAS ENOUGH TO SELL
-				if (this.stock.get(i).amount - amount < 0) {
-					return false;
+		Message m = new Message(player);
+		
+		if (stock.exists()) {
+			for (int i=0; i<this.stock.size(); i++) {
+				if (this.stock.get(i).stock.toString().equalsIgnoreCase(stock.toString())) {
+					// FOUND IT
+					
+					// CHECK THE PLAYER HAS ENOUGH TO SELL
+					if (this.stock.get(i).amount - amount < 0) {
+						return false;
+					}
+					
+					// OKAY THEY DO, LETS SELL EM
+					this.stock.get(i).amount -= amount;
+					
+					// OK NOW LETS UPADTE THE DATABASE
+					MySQL mysql = new MySQL();
+					PreparedStatement stmt = mysql.prepareStatement("UPDATE players SET " + stock.getID() + " = ? WHERE name LIKE ?");
+					try {
+						stmt.setInt(1, this.stock.get(i).amount);
+						stmt.setString(2, player.getName());
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					mysql.execute(stmt);
+					
+					
+					mysql.close();
+					
+					m.successMessage("Successfully sold " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
+					return true;
 				}
-				
-				// OKAY THEY DO, LETS SELL EM
-				this.stock.get(i).amount -= amount;
-				
-				// OK NOW LETS UPADTE THE DATABASE
-				MySQL mysql = new MySQL();
-				PreparedStatement stmt = mysql.prepareStatement("UPDATE players SET " + stock.getID() + " = ? WHERE name LIKE ?");
-				try {
-					stmt.setInt(1, this.stock.get(i).amount);
-					stmt.setString(2, player.getName());
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				mysql.execute(stmt);
-				
-				
-				mysql.close();
-				
-				return true;
 			}
+			
+			m.errorMessage("Failed to sell!  Check that you have that many!");
+			return false;
+		} else {
+			m.errorMessage("Invalid stock ID");
+			return false;
 		}
-		
-		
-		return false;
 	}
 	
 	public boolean buy (Stock stock, int amount) {
-		for (int i=0; i<this.stock.size(); i++) {
-			if (this.stock.get(i).stock.toString().equalsIgnoreCase(stock.toString())) {
-				// FOUND IT
-				
-				// CHECK THE PLAYER HAS ENOUGH MONEY TO BUY THIS MANY
-				
-				// OKAY THEY DO, LETS BUY EM
-				this.stock.get(i).amount += amount;
-				
-				// OK NOW LETS UPADTE THE DATABASE
-				MySQL mysql = new MySQL();
-				PreparedStatement stmt = mysql.prepareStatement("UPDATE players SET " + stock.getID() + " = ? WHERE name LIKE ?");
-				try {
-					stmt.setInt(1, this.stock.get(i).amount);
-					stmt.setString(2, player.getName());
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		Message m = new Message(player);
+		
+		if (stock.exists()) {
+			for (int i=0; i<this.stock.size(); i++) {
+				if (this.stock.get(i).stock.toString().equalsIgnoreCase(stock.toString())) {
+					// FOUND IT
+					
+					// CHECK THE PLAYER HAS ENOUGH MONEY TO BUY THIS MANY
+					
+					// OKAY THEY DO, LETS BUY EM
+					this.stock.get(i).amount += amount;
+					
+					// OK NOW LETS UPADTE THE DATABASE
+					MySQL mysql = new MySQL();
+					PreparedStatement stmt = mysql.prepareStatement("UPDATE players SET " + stock.getID() + " = ? WHERE name LIKE ?");
+					try {
+						stmt.setInt(1, this.stock.get(i).amount);
+						stmt.setString(2, player.getName());
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					mysql.execute(stmt);
+					mysql.close();
+					
+					m.successMessage("Successfully purchased " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
+					return true;
 				}
-				
-				mysql.execute(stmt);
-				
-				
-				mysql.close();
-				
-				return true;
 			}
+			m.errorMessage("Failed to buy!  Check that you have enough money!");
+			return false;
+		} else {
+			m.errorMessage("Invalid stock ID");
+			return false;
 		}
-		
-		
-		return false;
 	}
 	
 	public Vector<PlayerStock> list() {

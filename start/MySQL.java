@@ -27,6 +27,7 @@ public class MySQL {
 			close();
 		}
 		catch (Exception e) {
+			close();
 			e.printStackTrace();
 		}
 	}
@@ -67,7 +68,7 @@ public void execute (PreparedStatement stmt) {
 		try {
 			con.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("A bad call to mysql.close() occurred");	
 			e.printStackTrace();
 		}
 	}
@@ -77,7 +78,7 @@ public void execute (PreparedStatement stmt) {
 		try {
 			stmt = con.prepareStatement(s);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("An unexpected error occurred while generating a PreparedStatement"); 
 			e.printStackTrace();
 		}
 

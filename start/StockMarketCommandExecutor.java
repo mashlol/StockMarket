@@ -25,6 +25,8 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 			player = (Player) sender;
 		}
 		
+		Message m = new Message(player);
+		
 		if (command.getName().equalsIgnoreCase("sm")) {
 			if (args.length >= 1 && args[0].equalsIgnoreCase("help")) {
 				int page = 1;
@@ -33,63 +35,76 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					try {
 						page = Integer.parseInt(args[1]);
 					} catch (NumberFormatException e) {
-						errorMessage(player, "Inavlid Syntax. /sm help for help.");
+						
+						m.errorMessage("Invalid Syntax. /sm help for help.");
 						return true;
 					}
 				}
 				
-				displayHelp(player, page);
+				m.displayHelp(page);
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("info")) {
-				displayInfo(player);
+				m.displayInfo();
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("mine") && player != null) {
 				// LIST ALL THE STOCKS THIS PLAYER OWNS
 				PlayerStocks ps = new PlayerStocks(player);
 				
-				successMessage(player, "List of stocks you own:");
+				m.successMessage("List of stocks you own:");
 				
 				boolean found = false;
 				
 				for (int i=0; i<ps.list().size(); i++) {
 					PlayerStock playerstock = ps.list().get(i);
 					if (playerstock.amount > 0) {
-						regularMessage(player, playerstock.stock.getID() + " - Amount: " + playerstock.amount + " - Price: " + playerstock.stock.getPrice());
+						m.regularMessage(playerstock.stock.getID() + " - Amount: " + playerstock.amount + " - Price: " + playerstock.stock.getPrice());
 						found = true;
 					}
 				}
 				
 				if (!found) {
-					errorMessage(player, "You don't own any stocks.");
+					m.errorMessage("You don't own any stocks.");
 				}
 			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list")) {
 				// LIST ALL THE STOCKS THIS PLAYER CAN BUY
 				PlayerStocks ps = new PlayerStocks(player);
 				
-				successMessage(player, "List of stocks:");
+				m.successMessage("List of stocks:");
 				
 				for (int i=0; i<ps.list().size(); i++) {
 					PlayerStock playerstock = ps.list().get(i);
-					regularMessage(player, playerstock.stock.getID() + " - Price: " + playerstock.stock.getPrice());
+					m.regularMessage(playerstock.stock.getID() + " - Price: " + playerstock.stock.getPrice());
 				}
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("buy") && player != null) {
 				Stock stock = new Stock(args[1]);
 				int amount = 1;
 				
 				if (args.length == 3) {
-					amount = Integer.parseInt(args[2]);
+					try {
+						amount = Integer.parseInt(args[2]);
+					} catch (NumberFormatException e) {
+						m.errorMessage("Invalid Syntax");
+						return true;
+					}
 				}
 				
-				// ADD THIS STOCK TO THE PLAYER, TAKE HIS MONEY
-				buyStock(player, stock, amount);
+				// REMOVE THIS STOCK FROM THE PLAYER, TAKE HIS MONEY
+				PlayerStocks ps = new PlayerStocks(player);
+				ps.buy(stock, amount);
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("sell") && player != null) {
 				Stock stock = new Stock(args[1]);
 				int amount = 1;
 				
 				if (args.length == 3) {
-					amount = Integer.parseInt(args[2]);
+					try {
+						amount = Integer.parseInt(args[2]);
+					} catch (NumberFormatException e) {
+						m.errorMessage("Invalid Syntax");
+						return true;
+					}
 				}
 				
 				// REMOVE THIS STOCK FROM THE PLAYER, TAKE HIS MONEY
-				sellStock(player, stock, amount);
+				PlayerStocks ps = new PlayerStocks(player);
+				ps.sell(stock, amount);
 			} else if (args.length >= 6 && args[0].equalsIgnoreCase("add")){
 				// ADD A ROW IN THE stocks TABLE, ADD A COLUMN IN THE players TABLE.
 				String stockID = args[1];
@@ -103,7 +118,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					minprice = Integer.parseInt(args[4]);
 					volatility = Integer.parseInt(args[5]);
 				} catch (NumberFormatException e) {
-					errorMessage(player, "Invalid syntax.");
+					m.errorMessage("Invalid syntax.");
 					return true;
 				}
 				
@@ -127,7 +142,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				try {
 					while (result.next()) {
 						// THIS EXISTS!
-						errorMessage(player, "A stock with that ID already exists!");
+						m.errorMessage("A stock with that ID already exists!");
 						return true;
 					}
 				} catch (SQLException e1) {
@@ -152,10 +167,9 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				}
 				
 				mysql.execute(stmt);
-				
 				mysql.close();
 				
-				successMessage(player, "Successfully created new stock.");
+				m.successMessage("Successfully created new stock.");
 			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 				String stockID = args[1];
 				
@@ -180,9 +194,9 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					
 					mysql.close();
 					
-					successMessage(player, "Successfully removed that stock.");
+					m.successMessage("Successfully removed that stock.");
 				} else {
-					errorMessage(player, "That stock does not exist.");
+					m.errorMessage("That stock does not exist.");
 					return true;
 				}
 				
@@ -193,111 +207,30 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				Stock stock = new Stock(stockID);
 				
 				if (stock.exists()) {
-					successMessage(player, stock.toString());
-					regularMessage(player, "Current Price: " + stock.getPrice());
+					m.successMessage(stock.toString());
+					m.regularMessage("Current Price: " + stock.getPrice());
 					
 					// THIS SHOULD ONLY DISPLAY FOR ADMIN
-					regularMessage(player, "Base Price: " + stock.getBasePrice());
-					regularMessage(player, "Max Price: " + stock.getMaxPrice());
-					regularMessage(player, "Min Price: " + stock.getMinPrice());
-					regularMessage(player, "Volatility: " + stock.getVolatility());
+					m.regularMessage("Base Price: " + stock.getBasePrice());
+					m.regularMessage("Max Price: " + stock.getMaxPrice());
+					m.regularMessage("Min Price: " + stock.getMinPrice());
+					m.regularMessage("Volatility: " + stock.getVolatility());
 					
 				} else {
-					unknownCommand(player);
+					m.unknownCommand();
 					return true;
 				}
 				
 			} else if (args.length > 0){
 				// UNKNOWN COMMAND
-				unknownCommand(player);
+				m.unknownCommand();
 			} else {
-				displayInfo(player);
+				m.displayInfo();
 			}
 		}
 		
 		
 		return true;
-	}
-	
-	private void displayHelp (Player player, int page) {
-		if (page == 1) {
-			successMessage(player, "Help [Page 1 of 2]:");
-			regularMessage(player, "/sm help [page] - Displays a list of available commands and their info.");
-			regularMessage(player, "/sm info - Displays plugin version & status.");
-			regularMessage(player, "/sm list - Displays a list of stocks you are allowed to buy and their current price.");
-			regularMessage(player, "/sm list mine - Displays a list of stocks that you currently own and their current price.");
-			regularMessage(player, "/sm buy <stock ID> <amount> - Buys the stock specified.");
-		} else if (page == 2) {
-			successMessage(player, "Help [Page 2 of 2]:");
-			regularMessage(player, "/sm sell <stock ID> <amount> - Sells the stock specified.");
-			regularMessage(player, "/sm <stockID> - displays more details about stock requested.");
-		}
-	}
-	
-	private void displayInfo (Player player) {
-		successMessage(player, "Current version: v.01 developed by Mash.");
-	}
-	
-	private void unknownCommand (Player player) {
-		errorMessage(player, "Unknown command.  Use /sm help for commands.");
-	}
-	
-	private void errorMessage(Player player, String message) {
-		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketError" + ChatColor.WHITE + "]" + ChatColor.RED + " " + message);
-		else
-			System.out.println("[StockMarketError] " + message);
-	}
-	
-	private void regularMessage(Player player, String message) {
-		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.BLUE + " " + message);
-		else
-			System.out.println("[StockMarket] " + message);
-	}
-	
-	private void successMessage(Player player, String message) {
-		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.GREEN + " " + message);
-		else
-			System.out.println("[StockMarket] " + message);
-	}
-	
-	private int sellStock (Player player, Stock stock, int amount) {
-		
-		if (stock.exists()) {
-			PlayerStocks ps = new PlayerStocks(player);
-			
-			if (ps.sell(stock, amount))
-				successMessage(player, "Successfully sold " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
-			else
-				errorMessage(player, "Failed to sell!  Check that you have that many!");
-			
-			return 0;
-		} else {
-			errorMessage(player, "Invalid stock ID");
-		}
-		
-		return -1;
-	}
-	
-	private int buyStock (Player player, Stock stock, int amount) {
-		
-		if (stock.exists()) {
-			
-			PlayerStocks ps = new PlayerStocks(player);
-			
-			if (ps.buy(stock, amount))
-				successMessage(player, "Successfully bought " + amount + " " + stock + " stocks which are currently at " + stock.getPrice() + " each.");
-			else
-				errorMessage(player, "Failed to buy!  Check that you have enough money!");
-			
-			return 0;
-		} else {
-			errorMessage(player, "Invalid stock ID");
-		}
-		
-		return -1;
 	}
 	
 }
