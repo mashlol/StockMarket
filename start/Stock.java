@@ -59,6 +59,49 @@ public class Stock {
 		return false;
 	}
 	
+	public boolean add (String name, String stockID, int baseprice, int maxprice, int minprice, int volatility) {
+		MySQL mysql = new MySQL();
+		mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
+		
+		PreparedStatement stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		try {
+			stmt.setString(1, name);
+			stmt.setString(2, stockID);
+			stmt.setInt(3, baseprice);
+			stmt.setInt(4, baseprice);
+			stmt.setInt(5, maxprice);
+			stmt.setInt(6, minprice);
+			stmt.setInt(7, volatility);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		mysql.execute(stmt);
+		mysql.close();
+		
+		return true;
+	}
+	
+	public boolean remove () {
+		MySQL mysql = new MySQL();
+		
+		mysql.execute("ALTER TABLE players DROP COLUMN " + stockID);
+		
+		PreparedStatement stmt = mysql.prepareStatement("DELETE FROM stocks WHERE StockID LIKE ?");
+		try {
+			stmt.setString(1, stockID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		mysql.execute(stmt);
+		
+		mysql.close();
+		
+		return true;
+	}
+	
 	public boolean exists() {
 		return this.exists;
 	}

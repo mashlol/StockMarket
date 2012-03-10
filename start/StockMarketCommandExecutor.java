@@ -1,9 +1,5 @@
 package start;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -106,78 +102,53 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					name += args[i];
 				}
 				
-				MySQL mysql = new MySQL();
-				// LETS MAKE SURE IT DOESNT ALREADY EXIST!
-				PreparedStatement stmt = mysql.prepareStatement("SELECT stockID FROM stocks WHERE stockID LIKE ?");
-				try {
-					stmt.setString(1, stockID);
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
+				Stock stock = new Stock(stockID);
 				
-				ResultSet result = mysql.query(stmt);
-				
-				try {
-					while (result.next()) {
-						// THIS EXISTS!
-						m.errorMessage("A stock with that ID already exists!");
-						return true;
-					}
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
+//				MySQL mysql = new MySQL();
+//				// LETS MAKE SURE IT DOESNT ALREADY EXIST!
+//				PreparedStatement stmt = mysql.prepareStatement("SELECT stockID FROM stocks WHERE stockID LIKE ?");
+//				try {
+//					stmt.setString(1, stockID);
+//				} catch (SQLException e1) {
+//					e1.printStackTrace();
+//				}
+//				
+//				ResultSet result = mysql.query(stmt);
+//				
+//				try {
+//					while (result.next()) {
+//						// THIS EXISTS!
+//						
+//					}
+//				} catch (SQLException e1) {
+//					e1.printStackTrace();
+//				}
 		
+				if (!stock.exists()) {
+					stock.add(name, stockID, baseprice, maxprice, minprice, volatility);
+					m.successMessage("Successfully created new stock.");
+				} else {
+					m.errorMessage("A stock with that ID already exists!");
+					return true;
+				}
 				
 				//PreparedStatement stmt = mysql.prepareStatement("IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'players' AND COLUMN_NAME = '" + stockID + "') BEGIN ALTER TABLE players ADD " + stockID + " TINTYTEXT DEFAULT '0'");
-				mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
 				
-				stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility) VALUES (?, ?, ?, ?, ?, ?, ?)");
-				try {
-					stmt.setString(1, name);
-					stmt.setString(2, stockID);
-					stmt.setInt(3, baseprice);
-					stmt.setInt(4, baseprice);
-					stmt.setInt(5, maxprice);
-					stmt.setInt(6, minprice);
-					stmt.setInt(7, volatility);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				
-				mysql.execute(stmt);
-				mysql.close();
-				
-				m.successMessage("Successfully created new stock.");
 			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 				String stockID = args[1];
 				
 				Stock stock = new Stock(stockID);
 				
-				
 				if (stock.exists()) {
 				// REMOVE COLUMN FROM players, REMOVE ROW FROM stocks
 				// LETS FIRST LOOK AT STOCKS AND RETURN IF NOT FOUND
-					MySQL mysql = new MySQL();
-					
-					mysql.execute("ALTER TABLE players DROP COLUMN " + stockID);
-					
-					PreparedStatement stmt = mysql.prepareStatement("DELETE FROM stocks WHERE StockID LIKE ?");
-					try {
-						stmt.setString(1, stockID);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					
-					mysql.execute(stmt);
-					
-					mysql.close();
+					stock.remove();
 					
 					m.successMessage("Successfully removed that stock.");
 				} else {
 					m.errorMessage("That stock does not exist.");
 					return true;
 				}
-				
 			} else if (args.length == 1) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];
