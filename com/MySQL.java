@@ -21,7 +21,7 @@ public class MySQL {
 			Class.forName(driver);
 			con = DriverManager.getConnection(connection, user, password);
 			
-			execute("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price int, basePrice int, maxPrice int, minPrice int, volatility int)");
+			execute("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price double, basePrice int, maxPrice int, minPrice int, volatility int)");
 			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
 			
 		}

@@ -3,6 +3,8 @@ package com;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Random;
 
 public class Stock {
 
@@ -39,7 +41,7 @@ public class Stock {
 			while (result.next()) {
 				// WE FOUND IT, STORE SOME INFO
 				name = result.getString("name");
-				price = result.getInt("price");
+				price = result.getDouble("price");
 				basePrice = result.getInt("basePrice");
 				maxPrice = result.getInt("maxPrice");
 				minPrice = result.getInt("minPrice");
@@ -97,6 +99,53 @@ public class Stock {
 		mysql.close();
 		
 		return true;
+	}
+	
+	public boolean changePrice (double amount) {
+		MySQL mysql = new MySQL();
+		
+		System.out.println("[StockMarket] " + amount);
+		
+		DecimalFormat newFormat = new DecimalFormat("#.##");
+		amount =  Double.valueOf(newFormat.format(amount));
+		
+		PreparedStatement stmt = mysql.prepareStatement("UPDATE stocks SET price = price + ? WHERE stockID = ?");
+		try {
+			stmt.setDouble(1, amount);
+			stmt.setString(2, getID());
+		} catch (SQLException e) {
+			
+		}
+		
+		mysql.execute(stmt);
+		return true;
+	}
+	
+	public double updatePrice(boolean up, double scalar) {
+		double d = 0;
+		Random random = new Random();
+		double a = random.nextDouble();
+		
+		if (up) {
+			if (getPrice() - getBasePrice() == 0) {
+				d = ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			} else if (getPrice() - getBasePrice() > 0) {
+				d = (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			} else {
+				d = ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			}
+		} else {
+			if (getPrice() - getBasePrice() == 0) {
+				d = (-1) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			} else if (getPrice() - getBasePrice() > 0) {
+				d = (-1) * ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			} else {
+				d = (-1) * (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+			}
+		}
+		
+		System.out.println("[StockMarket] Random Number: " + (a * scalar + 1) + ", d: " + d);
+		return d;
 	}
 	
 	public boolean exists() {

@@ -67,6 +67,10 @@ public class StockMarket extends JavaPlugin {
 		commands.add(c);
 		c = new Command("sell", "Sells the stock & amount specified.", "<stockID> <amount>",  "stockMarket.sell");
 		commands.add(c);
+		c = new Command("add", "Adds a new stock to the list of all stocks.", "<stockID> <basePrice> <maxPrice> <minPrice> <volatility> <stockName>",  "stockMarket.add");
+		commands.add(c);
+		c = new Command("remove", "Removes an existing stock from the list of all stocks.  Cannot be undone.", "<stockID>",  "stockMarket.remove");
+		commands.add(c);
 		c = new Command("", "displays more info about stock requested.", "<stockID>",  "stockMarket.detail");
 		commands.add(c);
 	}

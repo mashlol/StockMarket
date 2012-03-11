@@ -3,6 +3,7 @@ package com;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
@@ -148,14 +149,16 @@ public class PlayerStocks {
 	
 	public void listAll () {
 		Message m = new Message(player);
+		DecimalFormat newFormat = new DecimalFormat("#.##");
 		
 		m.successMessage("List of stocks:");
 		for (PlayerStock ps : stock.values())
-			m.regularMessage(ps.stock.getID() + " - Price: " + ps.stock.getPrice());
+			m.regularMessage(ps.stock.getID() + " - Price: " + newFormat.format(ps.stock.getPrice()));
 	}
 	
 	public void listMine () {
 		Message m = new Message(player);
+		DecimalFormat newFormat = new DecimalFormat("#.##");
 		
 		if (!hasStocks()) {
 			m.errorMessage("You don't own any stocks. /sm help for help.");
@@ -165,7 +168,7 @@ public class PlayerStocks {
 		m.successMessage("List of your stocks:");
 		for (PlayerStock ps : stock.values())
 			if (ps.amount > 0) {
-				m.regularMessage(ps.stock.getID() + " - Amount: " + ps.amount + " - Price: " + ps.stock.getPrice());
+				m.regularMessage(ps.stock.getID() + " - Amount: " + ps.amount + " - Price: " + newFormat.format(ps.stock.getPrice()));
 			}
 	}
 	
