@@ -23,9 +23,10 @@ public class StockMarket extends JavaPlugin {
 	public static String mysqlUser = "root";
 	public static String mysqlPW = "";
 	
+	public static int randomEventFreq = 60;
 	
-	Logger log = Logger.getLogger("Minecraft");
-	StockMarketEventThread s;
+	private Logger log = Logger.getLogger("Minecraft");
+	private StockMarketEventThread s;
 	
 	public void onDisable() {
 		try {
@@ -67,12 +68,14 @@ public class StockMarket extends JavaPlugin {
 		loadConfiguration();
 	}
 	
-	public void loadConfiguration() {		
+	public void loadConfiguration() {
 		mysqlIP = getConfig().getString("mysql.ip");
 		mysqlPort = getConfig().getString("mysql.port");
 		mysqlDB = getConfig().getString("mysql.database");
 		mysqlUser = getConfig().getString("mysql.username");
 		mysqlPW = getConfig().getString("mysql.password");
+		
+		randomEventFreq = getConfig().getInt("random-event-frequency");
 	}
 	
 	private void initCommands() {

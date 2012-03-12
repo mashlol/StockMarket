@@ -104,8 +104,6 @@ public class Stock {
 	public boolean changePrice (double amount) {
 		MySQL mysql = new MySQL();
 		
-		System.out.println("[StockMarket] " + amount);
-		
 		DecimalFormat newFormat = new DecimalFormat("#.##");
 		amount =  Double.valueOf(newFormat.format(amount));
 		
@@ -144,7 +142,6 @@ public class Stock {
 			}
 		}
 		
-		System.out.println("[StockMarket] Random Number: " + (a * scalar + 1) + ", d: " + d);
 		return d;
 	}
 	
