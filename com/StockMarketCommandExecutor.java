@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 
 public class StockMarketCommandExecutor implements CommandExecutor {
 
-	//private StockMarket plugin;
+	private StockMarket plugin;
 	 
 	public StockMarketCommandExecutor(StockMarket plugin) {
-		//this.plugin = plugin;
+		this.plugin = plugin;
 	}
  
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -125,6 +125,10 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.errorMessage("That stock does not exist.");
 					return true;
 				}
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) { 
+				plugin.reloadConfig();
+				plugin.loadConfiguration();
+				m.successMessage("Successfully reloaded StockMarket.");
 			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.detail")) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];

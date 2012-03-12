@@ -17,11 +17,22 @@ public class StockMarket extends JavaPlugin {
 	public static Permission permission = null;
 	public static Economy economy = null;
 	
+	public static String mysqlIP = "localhost";
+	public static String mysqlPort = "3306";
+	public static String mysqlDB = "sm";
+	public static String mysqlUser = "root";
+	public static String mysqlPW = "";
+	
+	
 	Logger log = Logger.getLogger("Minecraft");
 	StockMarketEventThread s;
 	
 	public void onDisable() {
-		s.finish();
+		try {
+			s.finish();
+		} catch (NullPointerException e) {
+			System.out.println("[StockMarket] StockMarket thread never started!");
+		}
 	}
 
 	public void onEnable() {
@@ -50,6 +61,18 @@ public class StockMarket extends JavaPlugin {
 		s.start();
 		
 		initCommands();
+		
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		loadConfiguration();
+	}
+	
+	public void loadConfiguration() {		
+		mysqlIP = getConfig().getString("mysql.ip");
+		mysqlPort = getConfig().getString("mysql.port");
+		mysqlDB = getConfig().getString("mysql.database");
+		mysqlUser = getConfig().getString("mysql.username");
+		mysqlPW = getConfig().getString("mysql.password");
 	}
 	
 	private void initCommands() {

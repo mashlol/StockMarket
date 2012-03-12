@@ -12,9 +12,9 @@ public class MySQL {
 	
 	public MySQL () {
 		final String driver = "com.mysql.jdbc.Driver";
-		final String connection = "jdbc:mysql://localhost:3306/sm";
-		final String user = "root";
-		final String password = "";	
+		final String connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
+		final String user = StockMarket.mysqlUser;
+		final String password = StockMarket.mysqlPW;
 		
 		
 		try {
