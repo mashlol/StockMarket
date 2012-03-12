@@ -24,7 +24,7 @@ public class StockMarketEventThread extends Thread {
 
 			// GENERATE A NUMBER FROM 1-(TOTAL VOLATILITIES OF ALL STOCKS).  WHEREVER THIS LANDS THAT STOCK GETS SOME EVENT, THE CATEGORY OF THE EVENT WILL DEPEND ON THE VOLATILITY
 			
-			if (loopTimes % 1 == 0) {
+			if (loopTimes % 60 == 10) {
 				Stocks stocks = new Stocks();
 				
 				if (stocks.stock.size() > 0) {
@@ -50,7 +50,7 @@ public class StockMarketEventThread extends Thread {
 			loopTimes++;
 			// SLEEP
 			try {
-				Thread.sleep(20000); // THIS DELAY COULD BE CONFIG'D
+				Thread.sleep(60000); // THIS DELAY COULD BE CONFIG'D
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
