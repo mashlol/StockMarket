@@ -103,7 +103,7 @@ public class PlayerStocks {
 				mysql.close();
 				
 				StockMarket.economy.depositPlayer(player.getName(), amount * stock.getPrice());
-				m.successMessage("Successfully sold " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNameSingular() + " each.");
+				m.successMessage("Successfully sold " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNamePlural() + " each.");
 				return true;
 		} else {
 			m.errorMessage("Invalid stock ID");
@@ -139,7 +139,7 @@ public class PlayerStocks {
 			mysql.close();
 			
 			StockMarket.economy.depositPlayer(player.getName(), -1 * amount * stock.getPrice());
-			m.successMessage("Successfully purchased " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNameSingular() + " each.");
+			m.successMessage("Successfully purchased " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNamePlural() + " each.");
 			return true;
 		} else {
 			m.errorMessage("Invalid stock ID");
@@ -153,7 +153,7 @@ public class PlayerStocks {
 		
 		m.successMessage("List of stocks:");
 		for (PlayerStock ps : stock.values())
-			m.regularMessage(ps.stock.getID() + " - Price: " + newFormat.format(ps.stock.getPrice()));
+			m.regularMessage(ps.stock.getID() + " - Price: " + newFormat.format(ps.stock.getPrice()) + " " + StockMarket.economy.currencyNamePlural());
 	}
 	
 	public void listMine () {
@@ -168,7 +168,7 @@ public class PlayerStocks {
 		m.successMessage("List of your stocks:");
 		for (PlayerStock ps : stock.values())
 			if (ps.amount > 0) {
-				m.regularMessage(ps.stock.getID() + " - Amount: " + ps.amount + " - Price: " + newFormat.format(ps.stock.getPrice()));
+				m.regularMessage(ps.stock.getID() + " - Amount: " + ps.amount + " - Price: " + newFormat.format(ps.stock.getPrice()) + " " + StockMarket.economy.currencyNamePlural());
 			}
 	}
 	

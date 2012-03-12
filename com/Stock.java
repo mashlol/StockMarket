@@ -31,9 +31,8 @@ public class Stock {
 		PreparedStatement stmt = mysql.prepareStatement("SELECT * FROM stocks WHERE stockID LIKE ? ");
 		try {
 			stmt.setString(1, stockID);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (SQLException e) {
+			
 		}
 		ResultSet result = mysql.query(stmt);
 		
@@ -107,13 +106,33 @@ public class Stock {
 		DecimalFormat newFormat = new DecimalFormat("#.##");
 		amount =  Double.valueOf(newFormat.format(amount));
 		
-		PreparedStatement stmt = mysql.prepareStatement("UPDATE stocks SET price = price + ? WHERE stockID = ?");
-		try {
-			stmt.setDouble(1, amount);
-			stmt.setString(2, getID());
-		} catch (SQLException e) {
-			
+		PreparedStatement stmt = null;
+		if (getPrice() + amount > getMaxPrice()) {
+			stmt = mysql.prepareStatement("UPDATE stocks SET price = ? WHERE stockID = ?");
+			try {
+				stmt.setDouble(1, getMaxPrice());
+				stmt.setString(2, getID());
+			} catch (SQLException e) {
+				
+			}
+		} else if (getPrice() + amount < getMinPrice()) {
+			stmt = mysql.prepareStatement("UPDATE stocks SET price = ? WHERE stockID = ?");
+			try {
+				stmt.setDouble(1, getMinPrice());
+				stmt.setString(2, getID());
+			} catch (SQLException e) {
+				
+			}
+		} else {
+			stmt = mysql.prepareStatement("UPDATE stocks SET price = price + ? WHERE stockID = ?");
+			try {
+				stmt.setDouble(1, amount);
+				stmt.setString(2, getID());
+			} catch (SQLException e) {
+				
+			}
 		}
+		
 		
 		mysql.execute(stmt);
 		return true;
