@@ -105,8 +105,10 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				Stock stock = new Stock(stockID);
 						
 				if (!stock.exists()) {
-					stock.add(name, stockID, baseprice, maxprice, minprice, volatility);
-					m.successMessage("Successfully created new stock.");
+					if (stock.add(name, stockID, baseprice, maxprice, minprice, volatility))
+						m.successMessage("Successfully created new stock.");
+					else
+						m.errorMessage("Failed to create new stock.  Make sure the ID was valid.");
 				} else {
 					m.errorMessage("A stock with that ID already exists!");
 					return true;

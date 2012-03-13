@@ -12,7 +12,7 @@ public class Message {
 	}
 	
 	public void displayInfo () {
-		successMessage("Current version: v.01 developed by Mash.");
+		successMessage("Current version: v.02 developed by Mash.");
 	}
 	
 	public void unknownCommand () {

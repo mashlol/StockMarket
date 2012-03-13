@@ -12,7 +12,7 @@ public class MySQL {
 	
 	public MySQL () {
 		final String driver = "com.mysql.jdbc.Driver";
-		final String connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
+		String connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
 		final String user = StockMarket.mysqlUser;
 		final String password = StockMarket.mysqlPW;
 		
@@ -21,11 +21,39 @@ public class MySQL {
 			Class.forName(driver);
 			con = DriverManager.getConnection(connection, user, password);
 			
-			execute("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price double, basePrice int, maxPrice int, minPrice int, volatility int)");
-			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
+			
+			setUpTables();
 			
 		}
-		catch (Exception e) {
+		catch (SQLException e) {
+			try {
+				connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort;
+				con = DriverManager.getConnection(connection, user, password);
+				
+				execute("CREATE DATABASE IF NOT EXISTS " + StockMarket.mysqlDB);
+				
+				connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
+				con = DriverManager.getConnection(connection, user, password);
+				
+				setUpTables();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			//e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void setUpTables() {
+		try {
+			execute("CREATE TABLE IF NOT EXISTS stocks (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext, stockID tinytext, price double, basePrice int, maxPrice int, minPrice int, volatility int)");
+			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -42,7 +70,7 @@ public class MySQL {
 		return rs;
 	}
 	
-public void execute (PreparedStatement stmt) {
+	public void execute (PreparedStatement stmt) {
 	
 		try {
 			stmt.execute();
@@ -51,15 +79,11 @@ public void execute (PreparedStatement stmt) {
 		}
 	}
 	
-	public void execute (String s) {
+	public void execute (String s) throws SQLException {
 		
 		PreparedStatement stmt = prepareStatement(s);
 		
-		try {
-			stmt.execute();
-		} catch (SQLException e4) {
-			e4.printStackTrace();
-		}
+		stmt.execute();
 	}
 	
 	public void close() {

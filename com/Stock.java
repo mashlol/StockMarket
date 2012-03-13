@@ -59,7 +59,12 @@ public class Stock {
 	
 	public boolean add (String name, String stockID, int baseprice, int maxprice, int minprice, int volatility) {
 		MySQL mysql = new MySQL();
-		mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
+		try {
+			mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 		
 		PreparedStatement stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility) VALUES (?, ?, ?, ?, ?, ?, ?)");
 		try {
@@ -84,7 +89,11 @@ public class Stock {
 	public boolean remove () {
 		MySQL mysql = new MySQL();
 		
-		mysql.execute("ALTER TABLE players DROP COLUMN " + stockID);
+		try {
+			mysql.execute("ALTER TABLE players DROP COLUMN " + stockID);
+		} catch (SQLException e1) {
+			return false;
+		}
 		
 		PreparedStatement stmt = mysql.prepareStatement("DELETE FROM stocks WHERE StockID LIKE ?");
 		try {
