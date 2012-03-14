@@ -1,5 +1,6 @@
 package com;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -12,7 +13,7 @@ public class Message {
 	}
 	
 	public void displayInfo () {
-		successMessage("Current version: v.02 developed by Mash.");
+		successMessage("Current version: v" + Bukkit.getServer().getPluginManager().getPlugin("StockMarket").getDescription().getVersion() + " developed by Mash.");
 	}
 	
 	public void unknownCommand () {

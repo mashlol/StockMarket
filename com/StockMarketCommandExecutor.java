@@ -82,15 +82,15 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 			} else if (args.length >= 6 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.add") || player == null)){
 				// ADD A ROW IN THE stocks TABLE, ADD A COLUMN IN THE players TABLE.
 				String stockID = args[1];
-				int baseprice;
-				int minprice;
-				int maxprice;
-				int volatility;
+				double baseprice;
+				double minprice;
+				double maxprice;
+				double volatility;
 				try {
-					baseprice = Integer.parseInt(args[2]);
-					maxprice = Integer.parseInt(args[3]);
-					minprice = Integer.parseInt(args[4]);
-					volatility = Integer.parseInt(args[5]);
+					baseprice = Double.parseDouble(args[2]);
+					maxprice = Double.parseDouble(args[3]);
+					minprice = Double.parseDouble(args[4]);
+					volatility = Double.parseDouble(args[5]);
 				} catch (NumberFormatException e) {
 					m.errorMessage("Invalid syntax.");
 					return true;
@@ -131,6 +131,10 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				plugin.reloadConfig();
 				plugin.loadConfiguration();
 				m.successMessage("Successfully reloaded StockMarket.");
+			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom")) {
+				Stocks s = new Stocks();
+				EventInstance ei = new EventInstance();
+				ei.forceRandomEvent(s.getRandomStock());
 			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.detail")) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];

@@ -11,10 +11,10 @@ public class Stock {
 	private String name;
 	private String stockID;
 	private double price;
-	private int basePrice;
-	private int maxPrice;
-	private int minPrice;
-	private int volatility;
+	private double basePrice;
+	private double maxPrice;
+	private double minPrice;
+	private double volatility;
 	
 	private boolean exists;
 	
@@ -57,7 +57,7 @@ public class Stock {
 		return false;
 	}
 	
-	public boolean add (String name, String stockID, int baseprice, int maxprice, int minprice, int volatility) {
+	public boolean add (String name, String stockID, double baseprice, double maxprice, double minprice, double volatility) {
 		MySQL mysql = new MySQL();
 		try {
 			mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
@@ -70,11 +70,11 @@ public class Stock {
 		try {
 			stmt.setString(1, name);
 			stmt.setString(2, stockID);
-			stmt.setInt(3, baseprice);
-			stmt.setInt(4, baseprice);
-			stmt.setInt(5, maxprice);
-			stmt.setInt(6, minprice);
-			stmt.setInt(7, volatility);
+			stmt.setDouble(3, baseprice);
+			stmt.setDouble(4, baseprice);
+			stmt.setDouble(5, maxprice);
+			stmt.setDouble(6, minprice);
+			stmt.setDouble(7, volatility);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -153,22 +153,26 @@ public class Stock {
 		double a = random.nextDouble();
 		
 		if (up) {
-			if (getPrice() - getBasePrice() == 0) {
-				d = ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			} else if (getPrice() - getBasePrice() > 0) {
-				d = (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			} else {
-				d = ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			}
+			d = ((double) getVolatility() / 100) * (a * (scalar * .01) * (getBasePrice() + 1));
+//			if (getPrice() == getBasePrice()) {
+//				d = ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			} else if (getPrice() - getBasePrice() > 0) {
+//				d = (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			} else {
+//				d = ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			}
 		} else {
-			if (getPrice() - getBasePrice() == 0) {
-				d = (-1) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			} else if (getPrice() - getBasePrice() > 0) {
-				d = (-1) * ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			} else {
-				d = (-1) * (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
-			}
+			d = (-1) * ((double) getVolatility() / 100) * (a * (scalar * .01) * (getBasePrice() + 1));
+//			if (getPrice() - getBasePrice() == 0) {
+//				d = (-1) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			} else if (getPrice() - getBasePrice() > 0) {
+//				d = (-1) * ((double) Math.abs(getPrice() - getBasePrice()) / 5) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			} else {
+//				d = (-1) * (1/((getPrice() - getBasePrice())/getBasePrice())) * ((double) getVolatility() / 100) * ((a * scalar) + 1);
+//			}
 		}
+		
+		System.out.println("Number: " + d + ", Random number: " + a + ", Random & Scalar: " + (a * (scalar * .01) * getBasePrice()));
 		
 		return d;
 	}
@@ -177,15 +181,15 @@ public class Stock {
 		return this.exists;
 	}
 	
-	public int getMinPrice() {
+	public double getMinPrice() {
 		return this.minPrice;
 	}
 	
-	public int getMaxPrice() {
+	public double getMaxPrice() {
 		return this.maxPrice;
 	}
 	
-	public int getBasePrice() {
+	public double getBasePrice() {
 		return this.basePrice;
 	}
 	
@@ -193,7 +197,7 @@ public class Stock {
 		return this.price;
 	}
 	
-	public int getVolatility() {
+	public double getVolatility() {
 		return this.volatility;
 	}
 	

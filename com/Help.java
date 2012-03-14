@@ -8,7 +8,7 @@ public class Help {
 
 	private final int NUM_PER_PAGE = 4;
 	
-	Player player;
+	private Player player;
 	
 	public Help (Player player) {
 		this.player = player;

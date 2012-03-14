@@ -28,7 +28,7 @@ public class Stocks {
 		mysql.close();
 	}
 	
-	public Stock randomStock () {
+	public Stock getRandomStock () {
 		return stock.get(random.nextInt(stock.size()));
 	}
 	
