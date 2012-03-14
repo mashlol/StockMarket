@@ -79,16 +79,17 @@ public class StockMarket extends JavaPlugin {
 	}
 	
 	private void initCommands() {
-		commands.add(new Command("help", "Displays StockMarket help.", "<page>",  "stockMarket.help"));
-		commands.add(new Command("info", "Displays plugin version & status.", "",  "stockMarket.info"));
-		commands.add(new Command("list", "Displays a list of stocks you are allowed to buy and their current price.", "",  "stockMarket.list"));
-		commands.add(new Command("list mine", "Displays a list of stocks that you currently own and their current price.", "",  "stockMarket.list"));
-		commands.add(new Command("buy", "Buys the stock & amount specified.", "<stockID> <amount>",  "stockMarket.buy"));
-		commands.add(new Command("sell", "Sells the stock & amount specified.", "<stockID> <amount>",  "stockMarket.sell"));
-		commands.add(new Command("add", "Adds a new stock to the list of all stocks.", "<stockID> <basePrice> <maxPrice> <minPrice> <volatility> <stockName>",  "stockMarket.add"));
-		commands.add(new Command("remove", "Removes an existing stock from the list of all stocks.  Cannot be undone.", "<stockID>",  "stockMarket.remove"));
-		commands.add(new Command("forcerandom", "Forces a random event to occur on a random stock.", "",  "stockMarket.event"));
-		commands.add(new Command("", "displays more info about stock requested.", "<stockID>",  "stockMarket.detail"));
+		commands.add(new Command("help", "Displays StockMarket help.", "<page>",  "stockMarket.user.help"));
+		commands.add(new Command("info", "Displays plugin version & status.", "",  "stockMarket.user.info"));
+		commands.add(new Command("list", "Displays a list of stocks you are allowed to buy and their current price.", "",  "stockMarket.user.list"));
+		commands.add(new Command("list mine", "Displays a list of stocks that you currently own and their current price.", "",  "stockMarket.user.list"));
+		commands.add(new Command("buy", "Buys the stock & amount specified.", "<stockID> <amount>",  "stockMarket.user.buy"));
+		commands.add(new Command("sell", "Sells the stock & amount specified.", "<stockID> <amount>",  "stockMarket.user.sell"));
+		commands.add(new Command("add", "Adds a new stock to the list of all stocks.", "<stockID> <basePrice> <maxPrice> <minPrice> <volatility> <stockName>",  "stockMarket.admin.add"));
+		commands.add(new Command("remove", "Removes an existing stock from the list of all stocks.  Cannot be undone.", "<stockID>",  "stockMarket.admin.remove"));
+		commands.add(new Command("reload", "Reloads the StockMarket config.", "",  "stockMarket.admin.reload"));
+		commands.add(new Command("forcerandom", "Forces a random event to occur on a random stock.", "",  "stockMarket.admin.event"));
+		commands.add(new Command("", "displays more info about stock requested.", "<stockID>",  "stockMarket.user.detail"));
 	}
 	
 	private Boolean setupPermissions() {

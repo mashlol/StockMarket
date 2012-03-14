@@ -23,7 +23,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 		Message m = new Message(player);
 		
 		if (command.getName().equalsIgnoreCase("sm")) {
-			if (args.length >= 1 && args[0].equalsIgnoreCase("help") && StockMarket.permission.has(player, "stockmarket.help")) {
+			if (args.length >= 1 && args[0].equalsIgnoreCase("help") && StockMarket.permission.has(player, "stockmarket.user.help")) {
 				int page = 1;
 				
 				if (args.length > 1) {
@@ -37,17 +37,17 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				}
 				
 				m.displayHelp(page);
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("info") && StockMarket.permission.has(player, "stockmarket.info")) {
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("info") && StockMarket.permission.has(player, "stockmarket.user.info")) {
 				m.displayInfo();
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("mine") && player != null && StockMarket.permission.has(player, "stockmarket.list")) {
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("mine") && player != null && StockMarket.permission.has(player, "stockmarket.user.list")) {
 				// LIST ALL THE STOCKS THIS PLAYER OWNS
 				PlayerStocks ps = new PlayerStocks(player);
 				ps.listMine();
-			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list") && StockMarket.permission.has(player, "stockmarket.list")) {
+			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list") && StockMarket.permission.has(player, "stockmarket.user.list")) {
 				// LIST ALL THE STOCKS THIS PLAYER CAN BUY
 				PlayerStocks ps = new PlayerStocks(player);
 				ps.listAll();
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("buy") && player != null && StockMarket.permission.has(player, "stockmarket.buy")) {
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("buy") && player != null && StockMarket.permission.has(player, "stockmarket.user.buy")) {
 				Stock stock = new Stock(args[1]);
 				int amount = 1;
 				
@@ -60,10 +60,13 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					}
 				}
 				
-				// REMOVE THIS STOCK FROM THE PLAYER, TAKE HIS MONEY
-				PlayerStocks ps = new PlayerStocks(player);
-				ps.buy(stock, amount);
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("sell") && player != null && StockMarket.permission.has(player, "stockmarket.sell")) {
+				if (amount > 0) {
+					PlayerStocks ps = new PlayerStocks(player);
+					ps.buy(stock, amount);
+				} else {
+					m.errorMessage("Invalid amount.");
+				}
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("sell") && player != null && StockMarket.permission.has(player, "stockmarket.user.sell")) {
 				Stock stock = new Stock(args[1]);
 				int amount = 1;
 				
@@ -76,10 +79,13 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					}
 				}
 				
-				// REMOVE THIS STOCK FROM THE PLAYER, TAKE HIS MONEY
-				PlayerStocks ps = new PlayerStocks(player);
-				ps.sell(stock, amount);
-			} else if (args.length >= 6 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.add") || player == null)){
+				if (amount > 0) {
+					PlayerStocks ps = new PlayerStocks(player);
+					ps.sell(stock, amount);
+				} else {
+					m.errorMessage("Invalid amount.");
+				}
+			} else if (args.length >= 6 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.admin.add") || player == null)){
 				// ADD A ROW IN THE stocks TABLE, ADD A COLUMN IN THE players TABLE.
 				String stockID = args[1];
 				double baseprice;
@@ -114,7 +120,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove") && (StockMarket.permission.has(player, "stockmarket.remove") || player == null)) {
+			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove") && (StockMarket.permission.has(player, "stockmarket.admin.remove") || player == null)) {
 				String stockID = args[1];
 				
 				Stock stock = new Stock(stockID);
@@ -127,15 +133,15 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.errorMessage("That stock does not exist.");
 					return true;
 				}
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) { 
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload") && StockMarket.permission.has(player, "stockmarket.admin.reload")) { 
 				plugin.reloadConfig();
 				plugin.loadConfiguration();
 				m.successMessage("Successfully reloaded StockMarket.");
-			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom")) {
+			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom") && StockMarket.permission.has(player, "stockmarket.admin.event")) {
 				Stocks s = new Stocks();
 				EventInstance ei = new EventInstance();
 				ei.forceRandomEvent(s.getRandomStock());
-			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.detail")) {
+			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.user.detail")) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];
 				
@@ -146,12 +152,11 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.regularMessage("Current Price: " + stock.getPrice());
 					
 					// BASE SHOULD ONLY DISPLAY FOR A SPECIAL PERMISSION NODE
-					if (StockMarket.permission.has(player, "stockmarket.baseprice"))
+					if (StockMarket.permission.has(player, "stockmarket.admin.baseprice"))
 						m.regularMessage("Base Price: " + stock.getBasePrice());
 					m.regularMessage("Max Price: " + stock.getMaxPrice());
 					m.regularMessage("Min Price: " + stock.getMinPrice());
 					m.regularMessage("Volatility: " + stock.getVolatility());
-					
 				} else {
 					m.unknownCommand();
 					return true;
