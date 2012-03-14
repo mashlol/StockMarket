@@ -14,6 +14,8 @@ public class StockMarket extends JavaPlugin {
 	private StockMarketCommandExecutor myExecutor;
 	public static Vector<Command> commands = new Vector<Command>();
 	
+	public static Vector<Event> events = new Vector<Event>();
+	
 	public static Permission permission = null;
 	public static Economy economy = null;
 	
@@ -76,6 +78,14 @@ public class StockMarket extends JavaPlugin {
 		mysqlPW = getConfig().getString("mysql.password");
 		
 		randomEventFreq = getConfig().getInt("random-event-frequency");
+		
+		// LOAD EVENTS
+		events.clear();
+		int i = 0;
+		while(getConfig().getString("events." + i + ".message") != null) {
+			events.add(new Event(getConfig().getString("events." + i + ".message"), getConfig().getInt("events." + i + ".effect"), getConfig().getBoolean("events." + i + ".up"), getConfig().getInt("events." + i + ".frequency")));
+			i++;
+		}
 	}
 	
 	private void initCommands() {

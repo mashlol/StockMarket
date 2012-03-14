@@ -172,7 +172,7 @@ public class Stock {
 //			}
 		}
 		
-		System.out.println("Number: " + d + ", Random number: " + a + ", Random & Scalar: " + (a * (scalar * .01) * getBasePrice()));
+		//System.out.println("Number: " + d + ", Random number: " + a + ", Random & Scalar: " + (a * (scalar * .01) * getBasePrice()));
 		
 		return d;
 	}
