@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class Stocks {
 
-	public Vector<Stock> stock = new Vector<Stock>();
+	private Vector<Stock> stock = new Vector<Stock>();
 	private Random random = new Random();
 	
 	public Stocks () {
@@ -30,6 +30,10 @@ public class Stocks {
 	
 	public Stock getRandomStock () {
 		return stock.get(random.nextInt(stock.size()));
+	}
+	
+	public int numStocks () {
+		return stock.size();
 	}
 	
 }

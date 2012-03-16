@@ -85,25 +85,33 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				} else {
 					m.errorMessage("Invalid amount.");
 				}
-			} else if (args.length >= 6 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.admin.add") || player == null)){
-				// ADD A ROW IN THE stocks TABLE, ADD A COLUMN IN THE players TABLE.
+			} else if (args.length >= 9 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.admin.add") || player == null)) {
 				String stockID = args[1];
 				double baseprice;
 				double minprice;
 				double maxprice;
 				double volatility;
+				int amount;
+				double dividend;
 				try {
 					baseprice = Double.parseDouble(args[2]);
 					maxprice = Double.parseDouble(args[3]);
 					minprice = Double.parseDouble(args[4]);
 					volatility = Double.parseDouble(args[5]);
+					amount = Integer.parseInt(args[6]);
+					dividend = Double.parseDouble(args[7]);
 				} catch (NumberFormatException e) {
 					m.errorMessage("Invalid syntax.");
 					return true;
 				}
 				
-				String name = args[6];
-				for (int i=7; i<args.length; i++) {
+				if (amount < -1) {
+					m.errorMessage("Invalid amount.");
+					return true;
+				}
+				
+				String name = args[8];
+				for (int i=9; i<args.length; i++) {
 					name += " ";
 					name += args[i];
 				}
@@ -111,7 +119,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				Stock stock = new Stock(stockID);
 						
 				if (!stock.exists()) {
-					if (stock.add(name, stockID, baseprice, maxprice, minprice, volatility))
+					if (stock.add(name, stockID, baseprice, maxprice, minprice, volatility, amount, dividend))
 						m.successMessage("Successfully created new stock.");
 					else
 						m.errorMessage("Failed to create new stock.  Make sure the ID was valid.");
@@ -133,14 +141,54 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.errorMessage("That stock does not exist.");
 					return true;
 				}
+			} else if (args.length >= 8 && args[0].equalsIgnoreCase("set") && (StockMarket.permission.has(player, "stockmarket.admin.set") || player == null)){
+				String stockID = args[1];
+				double baseprice;
+				double minprice;
+				double maxprice;
+				double volatility;
+				int amount;
+				double dividend;
+				try {
+					baseprice = Double.parseDouble(args[2]);
+					maxprice = Double.parseDouble(args[3]);
+					minprice = Double.parseDouble(args[4]);
+					volatility = Double.parseDouble(args[5]);
+					amount = Integer.parseInt(args[6]);
+					dividend = Double.parseDouble(args[7]);
+				} catch (NumberFormatException e) {
+					m.errorMessage("Invalid syntax.");
+					return true;
+				}
+				
+				if (amount < -1) {
+					m.errorMessage("Invalid amount.");
+					return true;
+				}
+				
+				String name = args[8];
+				for (int i=9; i<args.length; i++) {
+					name += " ";
+					name += args[i];
+				}
+				
+				Stock stock = new Stock(stockID);
+						
+				if (stock.set(name, stockID, baseprice, maxprice, minprice, volatility, amount, dividend))
+					m.successMessage("Successfully adjusted stock.");
+				else
+					m.errorMessage("Failed to adjust stock.  Make sure the ID was valid.");
+				
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload") && StockMarket.permission.has(player, "stockmarket.admin.reload")) { 
 				plugin.reloadConfig();
 				plugin.loadConfiguration();
 				m.successMessage("Successfully reloaded StockMarket.");
 			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom") && StockMarket.permission.has(player, "stockmarket.admin.event")) {
 				Stocks s = new Stocks();
-				EventInstance ei = new EventInstance();
-				ei.forceRandomEvent(s.getRandomStock());
+				if (s.numStocks() > 0) {
+					EventInstance ei = new EventInstance();
+					ei.forceRandomEvent(s.getRandomStock());
+				}
 			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.user.detail")) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];
@@ -157,6 +205,11 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.regularMessage("Max Price: " + stock.getMaxPrice());
 					m.regularMessage("Min Price: " + stock.getMinPrice());
 					m.regularMessage("Volatility: " + stock.getVolatility());
+					m.regularMessage("Dividend: " + stock.getDividend() + "% per stock.");
+					if (stock.getAmount() != -1) 
+						m.regularMessage("Current Amount: " + stock.getAmount());
+					else
+						m.regularMessage("Current Amount: Infinite");
 				} else {
 					m.unknownCommand();
 					return true;

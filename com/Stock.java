@@ -15,6 +15,8 @@ public class Stock {
 	private double maxPrice;
 	private double minPrice;
 	private double volatility;
+	private int amount;
+	private double dividend;
 	
 	private boolean exists;
 	
@@ -24,7 +26,7 @@ public class Stock {
 		exists = getInfo();
 	}
 	
-	public boolean getInfo () {
+	private boolean getInfo () {
 		// FIND THIS STOCK IN THE DB IF IT EXISTS
 		MySQL mysql = new MySQL();
 		
@@ -41,10 +43,12 @@ public class Stock {
 				// WE FOUND IT, STORE SOME INFO
 				name = result.getString("name");
 				price = result.getDouble("price");
-				basePrice = result.getInt("basePrice");
-				maxPrice = result.getInt("maxPrice");
-				minPrice = result.getInt("minPrice");
-				volatility = result.getInt("volatility");
+				basePrice = result.getDouble("basePrice");
+				maxPrice = result.getDouble("maxPrice");
+				minPrice = result.getDouble("minPrice");
+				volatility = result.getDouble("volatility");
+				amount = result.getInt("amount");
+				dividend = result.getDouble("dividend");
 				mysql.close();
 				return true;
 			}
@@ -57,16 +61,15 @@ public class Stock {
 		return false;
 	}
 	
-	public boolean add (String name, String stockID, double baseprice, double maxprice, double minprice, double volatility) {
+	public boolean add (String name, String stockID, double baseprice, double maxprice, double minprice, double volatility, int amount, double dividend) {
 		MySQL mysql = new MySQL();
 		try {
 			mysql.execute("ALTER TABLE players ADD COLUMN " + stockID + " INT DEFAULT 0");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 		
-		PreparedStatement stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement stmt = mysql.prepareStatement("INSERT INTO stocks (name, stockID, price, basePrice, maxPrice, minPrice, volatility, amount, dividend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		try {
 			stmt.setString(1, name);
 			stmt.setString(2, stockID);
@@ -75,6 +78,32 @@ public class Stock {
 			stmt.setDouble(5, maxprice);
 			stmt.setDouble(6, minprice);
 			stmt.setDouble(7, volatility);
+			stmt.setInt(8, amount);
+			stmt.setDouble(9, dividend);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		mysql.execute(stmt);
+		mysql.close();
+		
+		return true;
+	}
+	
+	public boolean set (String name, String stockID, double baseprice, double maxprice, double minprice, double volatility, int amount, double dividend) {
+		MySQL mysql = new MySQL();
+		
+		PreparedStatement stmt = mysql.prepareStatement("UPDATE stocks SET name = ?, basePrice = ?, maxPrice = ?, minPrice = ?, volatility = ?, amount = ?, dividend = ? WHERE StockID LIKE ?");
+		try {
+			stmt.setString(1, name);
+			stmt.setDouble(2, baseprice);
+			stmt.setDouble(3, maxprice);
+			stmt.setDouble(4, minprice);
+			stmt.setDouble(5, volatility);
+			stmt.setInt(6, amount);
+			stmt.setDouble(7, dividend);
+			stmt.setString(8, stockID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -215,6 +244,14 @@ public class Stock {
 	
 	public String toString() {
 		return this.name;
+	}
+	
+	public int getAmount () {
+		return this.amount;
+	}
+	
+	public double getDividend () {
+		return this.dividend;
 	}
 	
 }

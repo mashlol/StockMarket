@@ -25,16 +25,23 @@ public class StockMarket extends JavaPlugin {
 	public static String mysqlUser = "root";
 	public static String mysqlPW = "";
 	
+	public static int dividendFreq = 1440;
 	public static int randomEventFreq = 60;
+	public static int maxPerPlayer = 250;
+	public static int maxPerPlayerPerStock = 50;
+	
+	public static boolean payOffline = true;
 	
 	private Logger log = Logger.getLogger("Minecraft");
-	private StockMarketEventThread s;
+	private StockMarketEventThread e;
+	private StockMarketDividendThread d;
 	
 	public void onDisable() {
 		try {
-			s.finish();
+			e.finish();
+			d.finish();
 		} catch (NullPointerException e) {
-			System.out.println("[StockMarket] StockMarket thread never started!");
+			System.out.println("[StockMarket] A StockMarket thread never started!");
 		}
 	}
 
@@ -57,27 +64,34 @@ public class StockMarket extends JavaPlugin {
 		myExecutor = new StockMarketCommandExecutor(this);
 		getCommand("sm").setExecutor(myExecutor);
 		
-		// FETCH FROM MYSQL THE LOOPTIME v
-		int loopTime = 0;
-		
-		s = new StockMarketEventThread(loopTime);
-		s.start();
 		
 		initCommands();
 		
-		getConfig().options().copyDefaults(true);
-		saveConfig();
 		loadConfiguration();
+		
+		e = new StockMarketEventThread();
+		e.start();
+		
+		d = new StockMarketDividendThread();
+		d.start();
 	}
 	
 	public void loadConfiguration() {
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		
 		mysqlIP = getConfig().getString("mysql.ip");
 		mysqlPort = getConfig().getString("mysql.port");
 		mysqlDB = getConfig().getString("mysql.database");
 		mysqlUser = getConfig().getString("mysql.username");
 		mysqlPW = getConfig().getString("mysql.password");
 		
+		dividendFreq = getConfig().getInt("dividend-frequency");
 		randomEventFreq = getConfig().getInt("random-event-frequency");
+		maxPerPlayer = getConfig().getInt("max-total-stocks-per-player");
+		maxPerPlayerPerStock = getConfig().getInt("max-total-stocks-per-player-per-stock");
+		
+		payOffline = getConfig().getBoolean("pay-offline-players");
 		
 		// LOAD EVENTS
 		events.clear();
@@ -95,11 +109,12 @@ public class StockMarket extends JavaPlugin {
 		commands.add(new Command("list mine", "Displays a list of stocks that you currently own and their current price.", "",  "stockMarket.user.list"));
 		commands.add(new Command("buy", "Buys the stock & amount specified.", "<stockID> <amount>",  "stockMarket.user.buy"));
 		commands.add(new Command("sell", "Sells the stock & amount specified.", "<stockID> <amount>",  "stockMarket.user.sell"));
-		commands.add(new Command("add", "Adds a new stock to the list of all stocks.", "<stockID> <basePrice> <maxPrice> <minPrice> <volatility> <stockName>",  "stockMarket.admin.add"));
+		commands.add(new Command("add", "Adds a new stock to the list of all stocks.", "<stockID> <basePrice> <maxPrice> <minPrice> <volatility> <amount> <dividend> <stockName>",  "stockMarket.admin.add"));
 		commands.add(new Command("remove", "Removes an existing stock from the list of all stocks.  Cannot be undone.", "<stockID>",  "stockMarket.admin.remove"));
+		commands.add(new Command("set", "Sets all the values of the given stock to the new specified values. Does not affect the current price.", "<stockID> <newBasePrice> <newMaxPrice> <newMinPrice> <newVolatility> <newAmount> <newDividend> <newStockName>",  "stockMarket.admin.set"));
 		commands.add(new Command("reload", "Reloads the StockMarket config.", "",  "stockMarket.admin.reload"));
 		commands.add(new Command("forcerandom", "Forces a random event to occur on a random stock.", "",  "stockMarket.admin.event"));
-		commands.add(new Command("", "displays more info about stock requested.", "<stockID>",  "stockMarket.user.detail"));
+		commands.add(new Command("", "Displays more info about stock requested.", "<stockID>",  "stockMarket.user.detail"));
 	}
 	
 	private Boolean setupPermissions() {
