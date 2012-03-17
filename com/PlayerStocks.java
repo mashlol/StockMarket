@@ -17,7 +17,10 @@ public class PlayerStocks {
 	
 	public PlayerStocks (Player player) {
 		this.player = player;
-		this.playerName = player.getName();
+		if (player != null)
+			this.playerName = player.getName();
+		else
+			this.playerName = "";
 		
 		exists = getPlayerInfo();
 	}

@@ -23,7 +23,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 		Message m = new Message(player);
 		
 		if (command.getName().equalsIgnoreCase("sm")) {
-			if (args.length >= 1 && args[0].equalsIgnoreCase("help") && StockMarket.permission.has(player, "stockmarket.user.help")) {
+			if (args.length >= 1 && args[0].equalsIgnoreCase("help") && (player == null || StockMarket.permission.has(player, "stockmarket.user.help"))) {
 				int page = 1;
 				
 				if (args.length > 1) {
@@ -37,13 +37,13 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				}
 				
 				m.displayHelp(page);
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("info") && StockMarket.permission.has(player, "stockmarket.user.info")) {
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("info") && (player == null || StockMarket.permission.has(player, "stockmarket.user.info"))) {
 				m.displayInfo();
 			} else if (args.length >= 2 && args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("mine") && player != null && StockMarket.permission.has(player, "stockmarket.user.list")) {
 				// LIST ALL THE STOCKS THIS PLAYER OWNS
 				PlayerStocks ps = new PlayerStocks(player);
 				ps.listMine();
-			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list") && StockMarket.permission.has(player, "stockmarket.user.list")) {
+			} else if (args.length >= 1 && args[0].equalsIgnoreCase("list") && (player == null || StockMarket.permission.has(player, "stockmarket.user.list"))) {
 				// LIST ALL THE STOCKS THIS PLAYER CAN BUY
 				PlayerStocks ps = new PlayerStocks(player);
 				ps.listAll();
@@ -85,14 +85,14 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				} else {
 					m.errorMessage("Invalid amount.");
 				}
-			} else if (args.length >= 9 && args[0].equalsIgnoreCase("add") && (StockMarket.permission.has(player, "stockmarket.admin.add") || player == null)) {
-				String stockID = args[1];
-				double baseprice;
-				double minprice;
-				double maxprice;
-				double volatility;
-				int amount;
-				double dividend;
+			} else if (args.length >= 9 && args[0].equalsIgnoreCase("add") && (player == null || StockMarket.permission.has(player, "stockmarket.admin.add"))) {
+				final String stockID = args[1];
+				final double baseprice;
+				final double minprice;
+				final double maxprice;
+				final double volatility;
+				final int amount;
+				final double dividend;
 				try {
 					baseprice = Double.parseDouble(args[2]);
 					maxprice = Double.parseDouble(args[3]);
@@ -128,7 +128,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove") && (StockMarket.permission.has(player, "stockmarket.admin.remove") || player == null)) {
+			} else if (args.length == 2 && args[0].equalsIgnoreCase("remove") && (player == null || StockMarket.permission.has(player, "stockmarket.admin.remove"))) {
 				String stockID = args[1];
 				
 				Stock stock = new Stock(stockID);
@@ -141,14 +141,14 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.errorMessage("That stock does not exist.");
 					return true;
 				}
-			} else if (args.length >= 8 && args[0].equalsIgnoreCase("set") && (StockMarket.permission.has(player, "stockmarket.admin.set") || player == null)){
-				String stockID = args[1];
-				double baseprice;
-				double minprice;
-				double maxprice;
-				double volatility;
-				int amount;
-				double dividend;
+			} else if (args.length >= 8 && args[0].equalsIgnoreCase("set") && (player == null || StockMarket.permission.has(player, "stockmarket.admin.set"))){
+				final String stockID = args[1];
+				final double baseprice;
+				final double minprice;
+				final double maxprice;
+				final double volatility;
+				final int amount;
+				final double dividend;
 				try {
 					baseprice = Double.parseDouble(args[2]);
 					maxprice = Double.parseDouble(args[3]);
@@ -179,17 +179,17 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 				else
 					m.errorMessage("Failed to adjust stock.  Make sure the ID was valid.");
 				
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload") && StockMarket.permission.has(player, "stockmarket.admin.reload")) { 
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload") && (player == null || StockMarket.permission.has(player, "stockmarket.admin.reload"))) { 
 				plugin.reloadConfig();
 				plugin.loadConfiguration();
 				m.successMessage("Successfully reloaded StockMarket.");
-			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom") && StockMarket.permission.has(player, "stockmarket.admin.event")) {
+			}  else if (args.length == 1 && args[0].equalsIgnoreCase("forcerandom") && (player == null || StockMarket.permission.has(player, "stockmarket.admin.event"))) {
 				Stocks s = new Stocks();
 				if (s.numStocks() > 0) {
 					EventInstance ei = new EventInstance();
 					ei.forceRandomEvent(s.getRandomStock());
 				}
-			} else if (args.length == 1 && StockMarket.permission.has(player, "stockmarket.user.detail")) {
+			} else if (args.length == 1 && (player == null || StockMarket.permission.has(player, "stockmarket.user.detail"))) {
 				// CHECK IF THIS IS A STOCK NAME
 				String stockID = args[0];
 				
@@ -200,7 +200,7 @@ public class StockMarketCommandExecutor implements CommandExecutor {
 					m.regularMessage("Current Price: " + stock.getPrice());
 					
 					// BASE SHOULD ONLY DISPLAY FOR A SPECIAL PERMISSION NODE
-					if (StockMarket.permission.has(player, "stockmarket.admin.baseprice"))
+					if (player == null || StockMarket.permission.has(player, "stockmarket.admin.baseprice"))
 						m.regularMessage("Base Price: " + stock.getBasePrice());
 					m.regularMessage("Max Price: " + stock.getMaxPrice());
 					m.regularMessage("Min Price: " + stock.getMinPrice());

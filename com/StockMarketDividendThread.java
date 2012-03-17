@@ -87,7 +87,7 @@ public class StockMarketDividendThread extends Thread {
 		MySQL mysql = new MySQL();
 		
 		try {
-			mysql.execute("UPDATE looptime SET looptime = " + loopTimes);
+			mysql.execute("UPDATE looptime SET looptime2 = " + loopTimes);
 		} catch (SQLException e) {
 			
 		}

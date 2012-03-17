@@ -24,7 +24,7 @@ public class Help {
 		while (it.hasNext()) {
 			Command c = it.next();
 			// CHECK FOR PERMISSION NODE
-			if (StockMarket.permission.has(player, c.getPermissionNode())) {
+			if (player == null || StockMarket.permission.has(player, c.getPermissionNode())) {
 				n++;
 				if (n > NUM_PER_PAGE * page)
 					return;
@@ -43,7 +43,7 @@ public class Help {
 		while (it.hasNext()) {
 			Command c = it.next();
 			// CHECK FOR PERMISSION NODE
-			if (StockMarket.permission.has(player, c.getPermissionNode()))
+			if (player == null || StockMarket.permission.has(player, c.getPermissionNode()))
 				n++;
 		}
 		
