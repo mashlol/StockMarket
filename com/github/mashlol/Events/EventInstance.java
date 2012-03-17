@@ -50,7 +50,8 @@ public class EventInstance {
 	}
 	
 	private void broadcastMessage (String message) {
-		Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketEvent" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
+		if (StockMarket.broadcastEvents)
+			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketEvent" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
 	}
 	
 }

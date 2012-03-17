@@ -2,7 +2,7 @@ package com.github.mashlol.Stocks;
 
 public class PlayerStock {
 
-	Stock stock;
-	int amount;
+	public Stock stock;
+	public int amount;
 	
 }

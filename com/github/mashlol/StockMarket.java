@@ -35,6 +35,9 @@ public class StockMarket extends JavaPlugin {
 	public static int maxPerPlayer = 250;
 	public static int maxPerPlayerPerStock = 50;
 	
+	public static boolean broadcastEvents = true;
+	public static boolean broadcastPayouts = true;
+	
 	public static boolean payOffline = true;
 	
 	private Logger log = Logger.getLogger("Minecraft");
@@ -97,6 +100,9 @@ public class StockMarket extends JavaPlugin {
 		maxPerPlayerPerStock = getConfig().getInt("max-total-stocks-per-player-per-stock");
 		
 		payOffline = getConfig().getBoolean("pay-offline-players");
+		
+		broadcastEvents = getConfig().getBoolean("broadcast-events");
+		broadcastPayouts = getConfig().getBoolean("broadcast-payouts");
 		
 		// LOAD EVENTS
 		events.clear();
