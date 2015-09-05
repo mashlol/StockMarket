@@ -200,7 +200,7 @@ public class PlayerStocks {
 				
 				mysql.close();
 				
-				StockMarket.economy.depositPlayer(player.getName(), -1 * amount * stock.getPrice());
+				StockMarket.economy.withdrawPlayer(player.getName(), amount * stock.getPrice());
 				m.successMessage("Successfully purchased " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNamePlural() + " each.");
 				return true;
 			} else {
