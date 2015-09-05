@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol.Threads;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import com.github.mashlol.MySQL;
+import com.github.mashlol.StockMarket;
+import com.github.mashlol.Stocks.PlayerStocks;
 
 public class StockMarketDividendThread extends Thread {
 
@@ -96,7 +100,8 @@ public class StockMarketDividendThread extends Thread {
 	}
 	
 	private void broadcastMessage (String message) {
-		Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketPayday" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
+		if (StockMarket.broadcastPayouts)
+			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketPayday" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
 	}
 	
 	

@@ -1,10 +1,13 @@
-package com;
+package com.github.mashlol.Events;
 
 import java.util.Iterator;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import com.github.mashlol.StockMarket;
+import com.github.mashlol.Stocks.Stock;
 
 public class EventInstance {
 
@@ -47,7 +50,8 @@ public class EventInstance {
 	}
 	
 	private void broadcastMessage (String message) {
-		Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketEvent" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
+		if (StockMarket.broadcastEvents)
+			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketEvent" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
 	}
 	
 }

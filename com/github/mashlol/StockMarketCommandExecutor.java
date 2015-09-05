@@ -1,9 +1,15 @@
-package com;
+package com.github.mashlol;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.github.mashlol.Events.EventInstance;
+import com.github.mashlol.Messages.Message;
+import com.github.mashlol.Stocks.PlayerStocks;
+import com.github.mashlol.Stocks.Stock;
+import com.github.mashlol.Stocks.Stocks;
 
 public class StockMarketCommandExecutor implements CommandExecutor {
 

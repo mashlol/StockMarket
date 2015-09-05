@@ -1,10 +1,12 @@
-package com;
+package com.github.mashlol.Stocks;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.Vector;
+
+import com.github.mashlol.MySQL;
 
 public class Stocks {
 

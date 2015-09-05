@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

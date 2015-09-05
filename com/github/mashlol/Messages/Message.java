@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol.Messages;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

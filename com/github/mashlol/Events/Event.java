@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol.Events;
 
 public class Event {
 

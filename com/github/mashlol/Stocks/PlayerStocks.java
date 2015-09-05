@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol.Stocks;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +7,10 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
+
+import com.github.mashlol.MySQL;
+import com.github.mashlol.StockMarket;
+import com.github.mashlol.Messages.Message;
 
 public class PlayerStocks {
 
@@ -196,7 +200,7 @@ public class PlayerStocks {
 				
 				mysql.close();
 				
-				StockMarket.economy.depositPlayer(player.getName(), -1 * amount * stock.getPrice());
+				StockMarket.economy.withdrawPlayer(player.getName(), amount * stock.getPrice());
 				m.successMessage("Successfully purchased " + amount + " " + stock + " stocks for " + stock.getPrice() + " " + StockMarket.economy.currencyNamePlural() + " each.");
 				return true;
 			} else {

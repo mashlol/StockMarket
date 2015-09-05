@@ -1,10 +1,12 @@
-package com;
+package com.github.mashlol.Stocks;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Random;
+
+import com.github.mashlol.MySQL;
 
 public class Stock {
 

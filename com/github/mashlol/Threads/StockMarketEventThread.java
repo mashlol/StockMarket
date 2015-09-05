@@ -1,7 +1,13 @@
-package com;
+package com.github.mashlol.Threads;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.github.mashlol.MySQL;
+import com.github.mashlol.StockMarket;
+import com.github.mashlol.Events.EventInstance;
+import com.github.mashlol.Stocks.Stock;
+import com.github.mashlol.Stocks.Stocks;
 
 public class StockMarketEventThread extends Thread {
 

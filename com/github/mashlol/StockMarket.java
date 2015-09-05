@@ -1,4 +1,4 @@
-package com;
+package com.github.mashlol;
  
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -8,6 +8,11 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.mashlol.Events.Event;
+import com.github.mashlol.Messages.Command;
+import com.github.mashlol.Threads.StockMarketDividendThread;
+import com.github.mashlol.Threads.StockMarketEventThread;
  
 public class StockMarket extends JavaPlugin {
  
@@ -29,6 +34,9 @@ public class StockMarket extends JavaPlugin {
 	public static int randomEventFreq = 60;
 	public static int maxPerPlayer = 250;
 	public static int maxPerPlayerPerStock = 50;
+	
+	public static boolean broadcastEvents = true;
+	public static boolean broadcastPayouts = true;
 	
 	public static boolean payOffline = true;
 	
@@ -92,6 +100,9 @@ public class StockMarket extends JavaPlugin {
 		maxPerPlayerPerStock = getConfig().getInt("max-total-stocks-per-player-per-stock");
 		
 		payOffline = getConfig().getBoolean("pay-offline-players");
+		
+		broadcastEvents = getConfig().getBoolean("broadcast-events");
+		broadcastPayouts = getConfig().getBoolean("broadcast-payouts");
 		
 		// LOAD EVENTS
 		events.clear();

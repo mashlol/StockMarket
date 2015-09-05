@@ -1,8 +1,10 @@
-package com;
+package com.github.mashlol.Messages;
 
 import java.util.Iterator;
 
 import org.bukkit.entity.Player;
+
+import com.github.mashlol.StockMarket;
 
 public class Help {
 
