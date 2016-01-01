@@ -100,7 +100,7 @@ public class StockMarketDividendThread extends Thread {
 	
 	private void broadcastMessage (String message) {
 		if (StockMarket.broadcastPayouts)
-			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketPayday" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
+			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
 	}
 	
 	

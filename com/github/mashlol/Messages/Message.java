@@ -22,30 +22,30 @@ public class Message {
 	
 	public void errorMessage(String message) {
 		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketError" + ChatColor.WHITE + "]" + ChatColor.RED + " " + message);
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "]" + ChatColor.RED + " " + message);
 		else
-			System.out.println("[StockMarketError] " + message);
+			System.out.println("[SM] " + message);
 	}
 	
 	public void regularMessage(String message) {
 		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.BLUE + " " + message);
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "]" + ChatColor.BLUE + " " + message);
 		else
-			System.out.println("[StockMarket] " + message);
+			System.out.println("[SM] " + message);
 	}
 	
 	public void successMessage(String message) {
 		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.GREEN + " " + message);
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "]" + ChatColor.GREEN + " " + message);
 		else
-			System.out.println("[StockMarket] " + message);
+			System.out.println("[SM] " + message);
 	}
 	
 	public void helpMessage(String message) {
 		if (player != null)
-			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarket" + ChatColor.WHITE + "]" + ChatColor.AQUA + " " + message);
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "]" + ChatColor.AQUA + " " + message);
 		else
-			System.out.println("[StockMarket] " + message);
+			System.out.println("[SM] " + message);
 	}
 	
 	public void displayHelp (int page) {
