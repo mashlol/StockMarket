@@ -1,0 +1,8 @@
+name: StockMarket
+main: com.github.mashlol.StockMarket
+version: .06
+depend: [Vault]
+commands:
+   sm:
+      description: Core StockMarket command.
+      usage: /sm
