@@ -49,22 +49,22 @@ public class StockMarket extends JavaPlugin {
 			e.finish();
 			d.finish();
 		} catch (NullPointerException e) {
-			System.out.println("[StockMarket] A StockMarket thread never started!");
+			System.out.println("[SM] A StockMarket thread never started!");
 		}
 	}
 
 	public void onEnable() {
 		if (setupEconomy()) {
-			log.info("[StockMarket] Economy plugin detected and hooked into.");
+			log.info("[SM] Economy plugin detected and hooked into.");
 		} else {
-			log.info("[StockMarket] Economy plugin not detected! Disabling StockMarket!");
+			log.info("[SM] Economy plugin not detected! Disabling StockMarket!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 		if (setupPermissions()) {
-			log.info("[StockMarket] Permissions plugin detected and hooked into.");
+			log.info("[SM] Permissions plugin detected and hooked into.");
 		} else {
-			log.info("[StockMarket] Permissions plugin not detected! Disabling StockMarket!");
+			log.info("[SM] Permissions plugin not detected! Disabling StockMarket!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}

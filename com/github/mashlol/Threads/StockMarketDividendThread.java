@@ -72,9 +72,8 @@ public class StockMarketDividendThread extends Thread {
 							
 						}
 					} else {
-						Player[] players = Bukkit.getOnlinePlayers();
 		                //loop through all of the online players and give them all a random item and amount of something, The diamond ore breaker will not get a reward.
-		                for (Player player : players) {
+		                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 		                	PlayerStocks ps = new PlayerStocks(Bukkit.getServer().getPlayer(player.getName()));
 							ps.payoutDividends();
 		                }
@@ -101,7 +100,7 @@ public class StockMarketDividendThread extends Thread {
 	
 	private void broadcastMessage (String message) {
 		if (StockMarket.broadcastPayouts)
-			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "StockMarketPayday" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
+			Bukkit.getServer().broadcastMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "SM" + ChatColor.WHITE + "] " + ChatColor.DARK_GREEN + message);
 	}
 	
 	
