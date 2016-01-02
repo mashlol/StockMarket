@@ -58,7 +58,6 @@ public class StockMarket extends JavaPlugin {
 	}
         public void disablePlugin() {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
-			return;
         }
 	public void onEnable() {
 		if (setupEconomy()) {
