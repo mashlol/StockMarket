@@ -96,7 +96,6 @@ public class MySQL {
 			try {
 				execute("ALTER TABLE stocks ADD COLUMN amount int");
 			} catch (SQLException e) {
-                            System.out.println("[StockMarket] " + " Not adding amount column to stocks database table. Most likely reason: It exists!");
                             if (StockMarket.debugMode == true) {
                                 e.printStackTrace();
                             }
@@ -105,7 +104,6 @@ public class MySQL {
 			try {
 				execute("ALTER TABLE stocks ADD COLUMN dividend decimal(10, 2)");
 			} catch (SQLException e) {
-                            System.out.println("[StockMarket] " + " Not adding dividend column to stocks database table. Most likely reason: It exists!");
                             if (StockMarket.debugMode == true) {
                                 e.printStackTrace();
                             }	
