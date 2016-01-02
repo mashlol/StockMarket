@@ -10,6 +10,8 @@ dividend-frequency: 1440
 pay-offline-players: true
 # Broadcast events?
 broadcast-events: true
+# Debug mode setting (Shows stack-traces if true)
+debug-mode: false
 # Broadcast dividend payouts?
 broadcast-payouts: true
 mysql:

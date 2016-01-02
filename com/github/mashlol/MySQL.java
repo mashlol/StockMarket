@@ -9,14 +9,14 @@ import java.sql.SQLException;
 public class MySQL {
 
 	private Connection con = null;
-	
+        public static boolean dbstatus = true;
+        
 	public MySQL () {
 		final String driver = "com.mysql.jdbc.Driver";
 		String connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
 		final String user = StockMarket.mysqlUser;
 		final String password = StockMarket.mysqlPW;
-		
-		
+			
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(connection, user, password);
@@ -37,14 +37,22 @@ public class MySQL {
 				setUpTables();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+                                System.out.println("[StockMarket] " + "Failed to create database during initialisation. Most likely due to incorrect database settings in config file.");
+                                if (StockMarket.debugMode == true) {
+                                    e1.printStackTrace();
+                                }
+                                dbstatus = false;
 			}
 			
 			//e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+                        System.out.println("[StockMarket] " + "SQL Drivers not installed. The server and java installation must support JDBC connections.");
+                        if (StockMarket.debugMode == true) {
+                            e.printStackTrace();
+                        }
+                        dbstatus = false;
+                }
 	}
 	
 	private void setUpTables() {
@@ -53,9 +61,12 @@ public class MySQL {
 			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
 			execute("CREATE TABLE IF NOT EXISTS looptime (looptime int NOT NULL DEFAULT 0, PRIMARY KEY(looptime), looptime2 int NOT NULL DEFAULT 0)");	
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+                        System.out.println("[StockMarket] " + "Could not execute create table statements during initialisation.");
+                        if (StockMarket.debugMode == true) {
+                            e.printStackTrace();
+                        }
+                        dbstatus = false;
+                }
 			ResultSet result = query("SELECT * FROM looptime");
 			
 			try {
@@ -65,25 +76,40 @@ public class MySQL {
 				}
 				if (!found) {
 					try {
-						execute("INSERT INTO looptime (looptime, looptime2) VALUES(0, 0)");
+                                            execute("INSERT INTO looptime (looptime, looptime2) VALUES(0, 0)");
 					} catch (SQLException e) {
-						e.printStackTrace();
+                                            System.out.println("[StockMarket] " + "Database Error - Could not update looptime!");
+                                            if (StockMarket.debugMode == true) {
+                                                e.printStackTrace();
+                                            }
+                                            dbstatus = false;
 					}	
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info!");
+                            if (StockMarket.debugMode == true) {
+                                e.printStackTrace();
+                            }
+                            dbstatus = false;
 			}
 			
 			try {
 				execute("ALTER TABLE stocks ADD COLUMN amount int");
 			} catch (SQLException e) {
-				// DO NOTHING
-			}
-			
+                            System.out.println("[StockMarket] " + "General Database error. Could not add amount column to stocks table! Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e.printStackTrace();
+                            }
+                            dbstatus = false;
+                        }			
 			try {
 				execute("ALTER TABLE stocks ADD COLUMN dividend decimal(10, 2)");
 			} catch (SQLException e) {
-				// DO NOTHING
+                            System.out.println("[StockMarket] " + "General Database error. Could not add dividend column to stocks table! Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e.printStackTrace();
+                            }	
+                            dbstatus = false;
 			}
 	}
 			
@@ -94,7 +120,11 @@ public class MySQL {
 		try {
 			rs = stmt.executeQuery();
 		} catch (SQLException e4) {
-			e4.printStackTrace();
+                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e4.printStackTrace();
+                            }	
+                            dbstatus = false;
 		}
 		
 		return rs;
@@ -107,7 +137,11 @@ public class MySQL {
 			PreparedStatement stmt = prepareStatement(string);
 			rs = stmt.executeQuery();
 		} catch (SQLException e4) {
-			e4.printStackTrace();
+                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e4.printStackTrace();
+                            }
+                            dbstatus = false;
 		}
 		
 		return rs;
@@ -118,14 +152,17 @@ public class MySQL {
 		try {
 			stmt.execute();
 		} catch (SQLException e4) {
-			e4.printStackTrace();
-		}
+                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e4.printStackTrace();
+                            }	
+                            dbstatus = false;
+                }
 	}
 	
 	public void execute (String s) throws SQLException {
 		
 		PreparedStatement stmt = prepareStatement(s);
-		
 		stmt.execute();
 	}
 	
@@ -133,8 +170,11 @@ public class MySQL {
 		try {
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("A bad call to mysql.close() occurred");	
-			e.printStackTrace();
+                            System.out.println("[StockMarket] " + "General Database error. Could not close SQL connection after use! Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                e.printStackTrace();
+                            }	
+                            dbstatus = false;
 		}
 	}
 	
@@ -143,8 +183,11 @@ public class MySQL {
 		try {
 			stmt = con.prepareStatement(s);
 		} catch (SQLException e) {
-			System.out.println("An unexpected error occurred while generating a PreparedStatement"); 
-			e.printStackTrace();
+                            System.out.println("[StockMarket] " + "General Database error. Could not convert " + s + " to a prepared database statement! Enable debug-mode for more info.");
+                            if (StockMarket.debugMode == true) {
+                                    e.printStackTrace();
+                            }
+                            dbstatus = false;
 		}
 
 		return stmt;

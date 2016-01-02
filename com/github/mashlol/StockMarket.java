@@ -13,6 +13,7 @@ import com.github.mashlol.Events.Event;
 import com.github.mashlol.Messages.Command;
 import com.github.mashlol.Threads.StockMarketDividendThread;
 import com.github.mashlol.Threads.StockMarketEventThread;
+import org.bukkit.Bukkit;
  
 public class StockMarket extends JavaPlugin {
  
@@ -39,6 +40,8 @@ public class StockMarket extends JavaPlugin {
 	public static boolean broadcastPayouts = true;
 	
 	public static boolean payOffline = true;
+        
+        public static boolean debugMode = false;
 	
 	private Logger log = Logger.getLogger("Minecraft");
 	private StockMarketEventThread e;
@@ -49,23 +52,27 @@ public class StockMarket extends JavaPlugin {
 			e.finish();
 			d.finish();
 		} catch (NullPointerException e) {
-			System.out.println("[SM] A StockMarket thread never started!");
+			log.info("[StockMarket] No cleanup required as event threads never started.");
+                        return;
 		}
 	}
-
+        public void disablePlugin() {
+			Bukkit.getServer().getPluginManager().disablePlugin(this);
+			return;
+        }
 	public void onEnable() {
 		if (setupEconomy()) {
-			log.info("[SM] Economy plugin detected and hooked into.");
+			log.info("[StockMarket] Economy plugin detected and hooked into.");
 		} else {
-			log.info("[SM] Economy plugin not detected! Disabling StockMarket!");
-			getServer().getPluginManager().disablePlugin(this);
+			log.severe("[StockMarket] Economy plugin not detected!");
+			this.disablePlugin();
 			return;
 		}
 		if (setupPermissions()) {
-			log.info("[SM] Permissions plugin detected and hooked into.");
+			log.info("[StockMarket] Permissions plugin detected and hooked into.");
 		} else {
-			log.info("[SM] Permissions plugin not detected! Disabling StockMarket!");
-			getServer().getPluginManager().disablePlugin(this);
+			log.severe("[StockMarket] Permissions plugin not detected!");
+			this.disablePlugin();
 			return;
 		}
 		
@@ -76,14 +83,21 @@ public class StockMarket extends JavaPlugin {
 		initCommands();
 		
 		loadConfiguration();
-		
+                
+	        if (verifyDatabase()) {
+                    log.info("[StockMarket] Database initalised.");
+                } else {
+                    log.severe("[StockMarket] Database failed to initialise!");
+                    this.disablePlugin();
+                    return;
+                }
+                
 		e = new StockMarketEventThread();
 		e.start();
 		
 		d = new StockMarketDividendThread();
 		d.start();
 	}
-	
 	public void loadConfiguration() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
@@ -100,6 +114,7 @@ public class StockMarket extends JavaPlugin {
 		maxPerPlayerPerStock = getConfig().getInt("max-total-stocks-per-player-per-stock");
 		
 		payOffline = getConfig().getBoolean("pay-offline-players");
+                debugMode = getConfig().getBoolean("debug-mode");
 		
 		broadcastEvents = getConfig().getBoolean("broadcast-events");
 		broadcastPayouts = getConfig().getBoolean("broadcast-payouts");
@@ -129,19 +144,24 @@ public class StockMarket extends JavaPlugin {
 	}
 	
 	private Boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
+            RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+            if (permissionProvider != null) {
+                permission = permissionProvider.getProvider();
+            }
+            return (permission != null);
         }
-        return (permission != null);
-    }
 	
-	 private Boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+	private Boolean setupEconomy() {
+            RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+            if (economyProvider != null) {
+                economy = economyProvider.getProvider();
+            }
 
-        return (economy != null);
-    }
+            return (economy != null);
+        }
+        
+        private Boolean verifyDatabase() {
+            MySQL mysql = new MySQL();
+            return mysql.dbstatus;
+        }
 }
