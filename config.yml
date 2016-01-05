@@ -1,0 +1,93 @@
+# How many stocks is the player allowed in total?
+max-total-stocks-per-player: 250 
+# How many stocks is the player allowed of each stock?
+max-total-stocks-per-player-per-stock: 50
+# How often in minutes should random events occur?
+random-event-frequency: 60
+# How often in minutes should dividends be paid out?
+dividend-frequency: 1440
+# Should offline players be paid during dividend payouts?
+pay-offline-players: true
+# Broadcast events?
+broadcast-events: true
+# Debug mode setting (Shows stack-traces if true)
+debug-mode: false
+# Broadcast dividend payouts?
+broadcast-payouts: true
+mysql:
+    ip: localhost
+    port: 3306
+    username: root
+    password: ""
+    database: sm
+events:
+    0:
+       message: "The CEO of %s has died of a heart attack.  The replacement is looking to be a poor one."
+       effect: 40
+       up: false
+       frequency: 50
+    1:
+       message: "The CEO of %s has died of a heart attack.  The replacement looks like he is even better than his successor!"
+       effect: 40
+       up: true
+       frequency: 50
+    2:
+       message: "%s has announced a new product to be released!  Speculation is high!"
+       effect: 8
+       up: true
+       frequency: 250
+    3:
+       message: "%s has announced a new product to be released!  Speculation is high!"
+       effect: 8
+       up: false
+       frequency: 250
+    4:
+       message: "%s's announced product was a huge success, customers are extremely satisfied!"
+       effect: 45
+       up: true
+       frequency: 250
+    5:
+       message: "%s's announced product was poorly made, causing poor customer satisfaction!"
+       effect: 45
+       up: false
+       frequency: 250
+    6:
+       message: "%s had a bad quarter."
+       effect: 30
+       up: false
+       frequency: 100
+    7:
+       message: "%s had a fantastic quarter."
+       effect: 30
+       up: true
+       frequency: 100
+    8:
+       message: "Everyone is speculating that %s is soon to come out with an extremely amazing product!"
+       effect: 65
+       up: true
+       frequency: 5
+    9:
+       message: "%s is on the brink of bankruptcy."
+       effect: 65
+       up: false
+       frequency: 5
+    10:
+       message: "%s just invented the next best thing since sliced bread!"
+       effect: 400
+       up: true
+       frequency: 1
+    11:
+       message: "%s just went bankrupt."
+       effect: 400
+       up: false
+       frequency: 1
+    12:
+       message: "%s just announced that they are replacing their current CEO, who has a bad reputation."
+       effect: 25
+       up: true
+       frequency: 25
+    13:
+       message: "%s just announced that they are replacing their current CEO, who everyone loves."
+       effect: 25
+       up: false
+       frequency: 25
