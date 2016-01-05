@@ -40,7 +40,6 @@ public class StockMarket extends JavaPlugin {
 	public static boolean broadcastPayouts = true;
 	
 	public static boolean payOffline = true;
-        
         public static boolean debugMode = false;
 	
 	private Logger log = Logger.getLogger("Minecraft");
