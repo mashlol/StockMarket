@@ -11,12 +11,20 @@ public class MySQL {
 	private Connection con = null;
         public static boolean dbstatus = true;
         
+        public void throwSQLException (SQLException e, String msg) {
+            if (msg != null) {
+                System.out.println("[StockMarket] " + msg);
+            }
+            if (StockMarket.debugMode == true) {
+                e.printStackTrace();
+            }
+        }
 	public MySQL () {
 		final String driver = "com.mysql.jdbc.Driver";
 		String connection = "jdbc:mysql://" + StockMarket.mysqlIP + ":" + StockMarket.mysqlPort + "/" + StockMarket.mysqlDB;
 		final String user = StockMarket.mysqlUser;
 		final String password = StockMarket.mysqlPW;
-			
+
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(connection, user, password);
@@ -36,11 +44,7 @@ public class MySQL {
 				
 				setUpTables();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-                                System.out.println("[StockMarket] " + "Failed to create database during initialisation. Most likely due to incorrect database settings in config file.");
-                                if (StockMarket.debugMode == true) {
-                                    e1.printStackTrace();
-                                }
+                                throwSQLException(e1, "Failed to create database during initialisation. Most likely due to incorrect database settings in config file.");
                                 dbstatus = false;
 			}
 			
@@ -61,10 +65,7 @@ public class MySQL {
 			execute("CREATE TABLE IF NOT EXISTS players (id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name tinytext)");
 			execute("CREATE TABLE IF NOT EXISTS looptime (looptime int NOT NULL DEFAULT 0, PRIMARY KEY(looptime), looptime2 int NOT NULL DEFAULT 0)");	
 		} catch (SQLException e) {
-                        System.out.println("[StockMarket] " + "Could not execute create table statements during initialisation.");
-                        if (StockMarket.debugMode == true) {
-                            e.printStackTrace();
-                        }
+                        throwSQLException(e,"Could not execute create table statements during initialisation.");
                         dbstatus = false;
                 }
 			ResultSet result = query("SELECT * FROM looptime");
@@ -78,22 +79,17 @@ public class MySQL {
 					try {
                                             execute("INSERT INTO looptime (looptime, looptime2) VALUES(0, 0)");
 					} catch (SQLException e) {
-                                            System.out.println("[StockMarket] " + "Database Error - Could not update looptime!");
-                                            if (StockMarket.debugMode == true) {
-                                                e.printStackTrace();
-                                            }
+                                            throwSQLException(e,"Database Error - Could not update looptime!");
                                             dbstatus = false;
 					}	
 				}
 			} catch (SQLException e) {
-                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info!");
-                            if (StockMarket.debugMode == true) {
-                                e.printStackTrace();
-                            }
+                            throwSQLException(e,"General Database error. Enable debug-mode for more info!");
                             dbstatus = false;
 			}
 			
 			try {
+                            // TODO: Move this to the onEnable function as it is being called repeatedly for no reason.
 				execute("ALTER TABLE stocks ADD COLUMN amount int");
 			} catch (SQLException e) {
                             if (StockMarket.debugMode == true) {
@@ -104,6 +100,7 @@ public class MySQL {
 			try {
 				execute("ALTER TABLE stocks ADD COLUMN dividend decimal(10, 2)");
 			} catch (SQLException e) {
+                            // TODO: Move this to the onEnable function as it is being called repeatedly for no reason.
                             if (StockMarket.debugMode == true) {
                                 e.printStackTrace();
                             }	
@@ -118,10 +115,7 @@ public class MySQL {
 		try {
 			rs = stmt.executeQuery();
 		} catch (SQLException e4) {
-                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
-                            if (StockMarket.debugMode == true) {
-                                e4.printStackTrace();
-                            }	
+                            throwSQLException(e4,"General Database error. Enable debug-mode for more info.");
                             dbstatus = false;
 		}
 		
@@ -135,10 +129,7 @@ public class MySQL {
 			PreparedStatement stmt = prepareStatement(string);
 			rs = stmt.executeQuery();
 		} catch (SQLException e4) {
-                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
-                            if (StockMarket.debugMode == true) {
-                                e4.printStackTrace();
-                            }
+                            throwSQLException(e4,"General Database error. Enable debug-mode for more info.");
                             dbstatus = false;
 		}
 		
@@ -150,10 +141,7 @@ public class MySQL {
 		try {
 			stmt.execute();
 		} catch (SQLException e4) {
-                            System.out.println("[StockMarket] " + "General Database error. Enable debug-mode for more info.");
-                            if (StockMarket.debugMode == true) {
-                                e4.printStackTrace();
-                            }	
+                            throwSQLException(e4,"General Database error. Enable debug-mode for more info.");
                             dbstatus = false;
                 }
 	}
@@ -168,10 +156,7 @@ public class MySQL {
 		try {
 			con.close();
 		} catch (SQLException e) {
-                            System.out.println("[StockMarket] " + "General Database error. Could not close SQL connection after use! Enable debug-mode for more info.");
-                            if (StockMarket.debugMode == true) {
-                                e.printStackTrace();
-                            }	
+                            throwSQLException(e,"General Database error. Could not close SQL connection after use! Enable debug-mode for more info.");
                             dbstatus = false;
 		}
 	}
@@ -181,10 +166,7 @@ public class MySQL {
 		try {
 			stmt = con.prepareStatement(s);
 		} catch (SQLException e) {
-                            System.out.println("[StockMarket] " + "General Database error. Could not convert " + s + " to a prepared database statement! Enable debug-mode for more info.");
-                            if (StockMarket.debugMode == true) {
-                                    e.printStackTrace();
-                            }
+                            throwSQLException(e,"General Database error. Could not convert " + s + " to a prepared database statement! Enable debug-mode for more info.");
                             dbstatus = false;
 		}
 
