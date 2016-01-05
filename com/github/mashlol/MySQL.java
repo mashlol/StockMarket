@@ -50,7 +50,6 @@ public class MySQL {
 			
 			//e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
                         System.out.println("[StockMarket] " + "SQL Drivers not installed. The server and java installation must support JDBC connections.");
                         if (StockMarket.debugMode == true) {
                             e.printStackTrace();
